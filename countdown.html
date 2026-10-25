@@ -236,21 +236,10 @@ var _hmt = _hmt || [];
         <span id="target-label" class="text-[11px] text-muted-foreground">目标 15 秒 · 秒级训练</span>
       </section>
 
-      <!-- Analog clock + progress ring (D: B + 倒计时进度环) -->
-      <section class="clock-wrap" aria-label="倒计时时钟">
-        <div class="clock clock--countdown" id="analog-clock">
-          <svg class="clock__ring" width="300" height="300" viewBox="0 0 300 300" aria-hidden="true">
-            <circle class="clock__ring-bg" cx="150" cy="150" r="140"/>
-            <circle class="clock__ring-fg" id="ring-fg" cx="150" cy="150" r="140"/>
-          </svg>
-          <div class="clock__ticks" id="clock-ticks"></div>
-          <div class="clock__center">
-            <div><span class="display__main" id="clock-main">00:15</span><span class="display__ms" id="clock-ms">.000</span></div>
-            <div class="clock__cap">COUNTDOWN</div>
-          </div>
-          <div class="clock__hand-min" id="hand-min"></div>
-          <div class="clock__hand-sec" id="hand-sec"></div>
-          <div class="clock__hub"></div>
+      <!-- Progress bar (thick · gradient · glow · shimmer) -->
+      <section class="progress" aria-label="倒计时进度">
+        <div class="progress__track relative h-2 w-full rounded-full bg-border overflow-hidden">
+          <div class="progress__fill absolute left-0 top-0 h-full rounded-full" style="width:100%"></div>
         </div>
       </section>
 
@@ -375,91 +364,25 @@ var _hmt = _hmt || [];
           margin-left: 0.05em;
         }
 
-        /* 模拟时钟 · D 方案（B 高对比 + 倒计时进度环） */
-        .clock-wrap { display:flex; justify-content:center; }
-        .clock {
-          position:relative;
-          width:280px;height:280px;border-radius:50%;
-          background:
-            radial-gradient(circle at 50% 30%, rgba(56,242,198,.10) 0%, transparent 55%),
-            radial-gradient(circle at 50% 50%, #0F151B 0%, #050809 70%);
-          border:1px solid rgba(56,242,198,.35);
-          box-shadow:inset 0 0 50px rgba(56,242,198,.12), 0 0 24px rgba(56,242,198,.18), 0 0 60px rgba(56,242,198,.08);
+        .progress__track { margin-top: 2px; }
+        /* 进度条：粗条 · 渐变 · 发光 · 流光（方案 B） */
+        .progress__fill {
+          background: linear-gradient(90deg, #0E7C5A 0%, #38F2C6 55%, #A8FFE8 100%);
+          box-shadow: 0 0 12px rgba(56, 242, 198, .55), 0 0 28px rgba(56, 242, 198, .25);
+          transition: width .12s linear;
         }
-        /* 倒计时进度环（外层 SVG） */
-        .clock--countdown .clock__ring {
-          position:absolute;inset:-10px;transform:rotate(-90deg);
-          width:300px;height:300px;pointer-events:none;
+        .progress__fill::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          border-radius: 999px;
+          background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, .45) 50%, transparent 100%);
+          background-size: 200% 100%;
+          animation: tm-shimmer 2.2s linear infinite;
         }
-        .clock__ring-bg { fill:none;stroke:rgba(56,242,198,.12);stroke-width:2; }
-        .clock__ring-fg {
-          fill:none;stroke:#38F2C6;stroke-width:3;stroke-linecap:round;
-          stroke-dasharray:879;stroke-dashoffset:0;
-          filter:drop-shadow(0 0 6px rgba(56,242,198,.8));
-          transition:stroke-dashoffset .12s linear;
-        }
-        .clock__ticks { position:absolute;inset:0;border-radius:50%; }
-        .clock__ticks span {
-          position:absolute;left:50%;top:6px;width:2px;height:8px;
-          background:rgba(168,255,232,.25);transform-origin:50% 134px;border-radius:999px;
-        }
-        .clock__ticks span.major { height:14px;background:rgba(56,242,198,.75);box-shadow:0 0 6px rgba(56,242,198,.6); }
-        /* 刻度数字：独立元素，counter-rotate 保持直立 */
-        .clock__num {
-          position:absolute;left:50%;top:30px;
-          transform:translate(-50%,0);
-          font-family:var(--tm-font-mono);font-size:11px;font-weight:600;
-          color:#38F2C6;text-shadow:0 0 6px rgba(56,242,198,.6);
-          pointer-events:none;
-        }
-        .clock__center {
-          position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-          text-align:center;
-        }
-        .clock__center .display__main,
-        .clock__center .display__ms {
-          font-family:var(--tm-font-mono);font-size:34px;font-weight:700;letter-spacing:-.02em;
-          color:#E6EDF3;text-shadow:0 0 16px rgba(56,242,198,.45),0 0 32px rgba(56,242,198,.22);
-        }
-        .clock__center .display__ms {
-          font-size:15px;font-weight:500;color:#38F2C6;
-          text-shadow:0 0 8px rgba(56,242,198,.6);margin-left:4px;
-        }
-        .clock__cap { font-size:9px;letter-spacing:.3em;color:#38F2C6;margin-top:6px;opacity:.8; }
-        .clock__hand-sec {
-          position:absolute;left:50%;top:50%;width:2px;height:118px;
-          background:linear-gradient(to top,transparent 0%,#38F2C6 25%,#A8FFE8 100%);
-          transform-origin:50% 0;transform:translate(-50%,0) rotate(0deg);
-          box-shadow:0 0 10px rgba(56,242,198,.85),0 0 20px rgba(56,242,198,.4);
-          border-radius:999px;
-          transition:transform .08s cubic-bezier(.4,2.5,.6,1);
-        }
-        .clock__hand-sec::after {
-          content:"";position:absolute;left:50%;top:-4px;transform:translateX(-50%);
-          width:6px;height:6px;border-radius:50%;background:#A8FFE8;
-          box-shadow:0 0 10px #38F2C6,0 0 20px #38F2C6;
-        }
-        .clock__hand-min {
-          position:absolute;left:50%;top:50%;width:3px;height:78px;
-          background:linear-gradient(to top,transparent 0%,#A8FFE8 20%,#E6EDF3 100%);
-          transform-origin:50% 0;transform:translate(-50%,0) rotate(0deg);
-          box-shadow:0 0 8px rgba(168,255,232,.55);border-radius:999px;
-          transition:transform .2s ease-out;
-        }
-        .clock__hub {
-          position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-          width:12px;height:12px;border-radius:50%;background:#A8FFE8;
-          box-shadow:0 0 14px #38F2C6,0 0 30px rgba(56,242,198,.7),0 0 50px rgba(56,242,198,.3);
-        }
-        .clock__hub::after {
-          content:"";position:absolute;inset:3px;border-radius:50%;background:#04140F;
-        }
-        @media (max-width: 380px) {
-          .clock { width:240px;height:240px; }
-          .clock--countdown .clock__ring { width:260px;height:260px;inset:-10px; }
-          .clock__ticks span { transform-origin:50% 114px; }
-          .clock__hand-sec { height:98px; }
-          .clock__hand-min { height:64px; }
+        @keyframes tm-shimmer {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
         }
 
         .presets-card { width: 100%; }
