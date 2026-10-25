@@ -282,6 +282,8 @@
     }
 
     if (btnStart) btnStart.addEventListener('click', function () {
+      // 移动端 iOS Safari 必须在用户手势内解锁 AudioContext，否则归零铃声会被拦截
+      try { SoundEngine.ensure(); if (SoundEngine.ctx && SoundEngine.ctx.state === 'suspended') SoundEngine.ctx.resume(); } catch (e) {}
       if (engine.state === 'running') { engine.pause(); setStartButton(false); }
       else { engine.start(); setStartButton(true); }
     });
@@ -426,6 +428,8 @@
     }
 
     if (btnStart) btnStart.addEventListener('click', function () {
+      // 移动端 iOS Safari 必须在用户手势内解锁 AudioContext，否则归零铃声会被拦截
+      try { SoundEngine.ensure(); if (SoundEngine.ctx && SoundEngine.ctx.state === 'suspended') SoundEngine.ctx.resume(); } catch (e) {}
       if (engine.state === 'running') { engine.pause(); setStartButton(false); }
       else { engine.start(); setStartButton(true); }
     });
