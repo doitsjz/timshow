@@ -171,6 +171,9 @@
         mask-position: center;
         background-color: currentColor;
       }
+      .lang-seg button { transition: all .2s; cursor: pointer; border: 0; background: transparent; }
+      .lang-seg button:not(.on) { color: var(--tm-muted-foreground); }
+      .lang-seg button:not(.on):hover { color: var(--tm-foreground); }
     </style>
 <!-- 百度统计 -->
 <script>
@@ -195,17 +198,21 @@ var _hmt = _hmt || [];
             <i data-lucide="timer" class="w-4 h-4 text-primary"></i>
           </span>
           <div class="flex flex-col leading-none">
-            <span class="text-[14px] font-semibold text-foreground">极简计时器</span>
-            <span class="text-[10px] tracking-[0.25em] text-muted-foreground">STOPWATCH · TIMER</span>
+            <span class="text-[14px] font-semibold text-foreground" data-i18n="brand">极简计时器</span>
+            <span class="text-[10px] tracking-[0.25em] text-muted-foreground" data-i18n="brandSub">STOPWATCH · TIMER</span>
           </div>
         </div>
         <div class="flex items-center gap-2">
-          <button type="button" aria-label="通知" class="grid place-items-center w-9 h-9 rounded-full bg-card border border-border text-muted-foreground hover:text-foreground transition-colors">
+          <button type="button" aria-label="通知" data-i18n-aria="ariaNotice" class="grid place-items-center w-9 h-9 rounded-full bg-card border border-border text-muted-foreground hover:text-foreground transition-colors">
             <i data-lucide="bell" class="w-4 h-4"></i>
           </button>
-          <button data-dom-id="icon-settings" type="button" aria-label="设置" class="grid place-items-center w-9 h-9 rounded-full bg-card border border-primary text-primary transition-colors">
+          <button data-dom-id="icon-settings" type="button" aria-label="设置" data-i18n-aria="settings" class="grid place-items-center w-9 h-9 rounded-full bg-card border border-primary text-primary transition-colors">
             <i data-lucide="settings" class="w-4 h-4"></i>
           </button>
+          <div class="lang-seg inline-flex items-center gap-0.5 rounded-full border border-border bg-muted/60 p-0.5" role="group" aria-label="切换语言">
+            <button type="button" data-lang="zh" class="on px-2.5 py-1 rounded-full text-[11px] font-semibold text-primary-foreground" style="background:linear-gradient(135deg,#38F2C6,#22D3B0);box-shadow:0 0 8px rgba(56,242,198,.4)" aria-pressed="true">中</button>
+            <button type="button" data-lang="en" class="px-2.5 py-1 rounded-full text-[11px] font-semibold text-muted-foreground" aria-pressed="false">EN</button>
+          </div>
         </div>
       </div>
     </header>
@@ -218,11 +225,11 @@ var _hmt = _hmt || [];
         <div class="tabs__pill inline-flex items-center gap-1.5 bg-muted/60 border border-border rounded-full p-1.5">
           <button data-dom-id="tab-countdown" class="tab inline-flex items-center gap-2 px-7 py-2.5 rounded-full text-[18px] font-semibold tracking-[0.04em] text-muted-foreground">
             <i data-lucide="hourglass" class="w-[18px] h-[18px]"></i>
-            <span>倒计时</span>
+            <span data-i18n="tabCountdown">倒计时</span>
           </button>
           <button data-dom-id="tab-stopwatch" class="tab tab--active inline-flex items-center gap-2 px-7 py-2.5 rounded-full text-[18px] font-semibold tracking-[0.04em] text-primary-foreground" style="background:linear-gradient(135deg,#38F2C6 0%,#A8FFE8 100%);box-shadow:0 0 18px rgba(56,242,198,.55),0 0 40px rgba(56,242,198,.25);">
             <i data-lucide="timer" class="w-[18px] h-[18px]"></i>
-            <span>秒表</span>
+            <span data-i18n="tabStopwatch">秒表</span>
           </button>
         </div>
         <span class="tabs__indicator" aria-hidden="true"></span>
@@ -282,7 +289,7 @@ var _hmt = _hmt || [];
               <i data-lucide="bell-ring" class="w-4 h-4 text-primary"></i>
             </span>
             <div class="flex flex-col leading-none">
-              <h2 id="modal-title" class="text-[15px] font-semibold text-foreground">铃声设置</h2>
+              <h2 id="modal-title" class="text-[15px] font-semibold text-foreground" data-i18n="settings">铃声设置</h2>
               <span class="text-[10px] tracking-[0.25em] text-muted-foreground mt-0.5">ALERT SOUND</span>
             </div>
           </div>
@@ -301,10 +308,10 @@ var _hmt = _hmt || [];
                   <i data-lucide="bell" class="w-4 h-4 text-primary"></i>
                 </span>
                 <span class="flex flex-col leading-tight">
-                  <span class="text-[14px] font-medium text-foreground">铃声</span>
+                  <span class="text-[14px] font-medium text-foreground" data-i18n="bell">铃声</span>
                   <span class="text-[11px] text-muted-foreground">清脆铃铛声，默认提示</span>
                 </span>
-                <button type="button" aria-label="试听" class="sound-option__preview grid place-items-center w-8 h-8 rounded-full bg-muted/60 border border-border text-muted-foreground hover:text-primary transition-colors">
+                <button type="button" aria-label="试听" data-i18n-aria="preview" class="sound-option__preview grid place-items-center w-8 h-8 rounded-full bg-muted/60 border border-border text-muted-foreground hover:text-primary transition-colors">
                   <i data-lucide="volume-2" class="w-4 h-4"></i>
                 </button>
               </label>
@@ -316,10 +323,10 @@ var _hmt = _hmt || [];
                   <i data-lucide="bell-dot" class="w-4 h-4 text-muted-foreground"></i>
                 </span>
                 <span class="flex flex-col leading-tight">
-                  <span class="text-[14px] font-medium text-foreground">叮咚</span>
+                  <span class="text-[14px] font-medium text-foreground" data-i18n="dingdong">叮咚</span>
                   <span class="text-[11px] text-muted-foreground">门铃式双音提示</span>
                 </span>
-                <button type="button" aria-label="试听" class="sound-option__preview grid place-items-center w-8 h-8 rounded-full bg-muted/60 border border-border text-muted-foreground hover:text-primary transition-colors">
+                <button type="button" aria-label="试听" data-i18n-aria="preview" class="sound-option__preview grid place-items-center w-8 h-8 rounded-full bg-muted/60 border border-border text-muted-foreground hover:text-primary transition-colors">
                   <i data-lucide="volume-2" class="w-4 h-4"></i>
                 </button>
               </label>
@@ -331,10 +338,10 @@ var _hmt = _hmt || [];
                   <i data-lucide="audio-waveform" class="w-4 h-4 text-muted-foreground"></i>
                 </span>
                 <span class="flex flex-col leading-tight">
-                  <span class="text-[14px] font-medium text-foreground">蜂鸣</span>
+                  <span class="text-[14px] font-medium text-foreground" data-i18n="buzzer">蜂鸣</span>
                   <span class="text-[11px] text-muted-foreground">持续电子蜂鸣音</span>
                 </span>
-                <button type="button" aria-label="试听" class="sound-option__preview grid place-items-center w-8 h-8 rounded-full bg-muted/60 border border-border text-muted-foreground hover:text-primary transition-colors">
+                <button type="button" aria-label="试听" data-i18n-aria="preview" class="sound-option__preview grid place-items-center w-8 h-8 rounded-full bg-muted/60 border border-border text-muted-foreground hover:text-primary transition-colors">
                   <i data-lucide="volume-2" class="w-4 h-4"></i>
                 </button>
               </label>
@@ -346,10 +353,10 @@ var _hmt = _hmt || [];
                   <i data-lucide="bell-off" class="w-4 h-4 text-muted-foreground"></i>
                 </span>
                 <span class="flex flex-col leading-tight">
-                  <span class="text-[14px] font-medium text-foreground">静音</span>
+                  <span class="text-[14px] font-medium text-foreground" data-i18n="silent">静音</span>
                   <span class="text-[11px] text-muted-foreground">仅屏幕闪烁提示</span>
                 </span>
-                <button type="button" aria-label="试听" class="sound-option__preview grid place-items-center w-8 h-8 rounded-full bg-muted/60 border border-border text-muted-foreground hover:text-primary transition-colors">
+                <button type="button" aria-label="试听" data-i18n-aria="preview" class="sound-option__preview grid place-items-center w-8 h-8 rounded-full bg-muted/60 border border-border text-muted-foreground hover:text-primary transition-colors">
                   <i data-lucide="volume-x" class="w-4 h-4"></i>
                 </button>
               </label>
@@ -361,10 +368,10 @@ var _hmt = _hmt || [];
                   <i data-lucide="music" class="w-4 h-4 text-muted-foreground"></i>
                 </span>
                 <span class="flex flex-col leading-tight">
-                  <span class="text-[14px] font-medium text-foreground">自定义</span>
+                  <span class="text-[14px] font-medium text-foreground" data-i18n="customSound">自定义</span>
                   <span class="text-[11px] text-muted-foreground">上传音频或粘贴链接</span>
                 </span>
-                <button type="button" aria-label="试听" class="sound-option__preview grid place-items-center w-8 h-8 rounded-full bg-muted/60 border border-border text-muted-foreground hover:text-primary transition-colors">
+                <button type="button" aria-label="试听" data-i18n-aria="preview" class="sound-option__preview grid place-items-center w-8 h-8 rounded-full bg-muted/60 border border-border text-muted-foreground hover:text-primary transition-colors">
                   <i data-lucide="upload" class="w-4 h-4"></i>
                 </button>
               </label>
@@ -375,7 +382,7 @@ var _hmt = _hmt || [];
           <div class="volume-row">
             <div class="flex items-center gap-2">
               <i data-lucide="volume-1" class="w-4 h-4 text-muted-foreground"></i>
-              <span class="text-[12px] text-muted-foreground tracking-[0.15em]">音量 · VOLUME</span>
+              <span class="text-[12px] text-muted-foreground tracking-[0.15em]" data-i18n="volume">音量 · VOLUME</span>
             </div>
             <div class="volume-row__slider">
               <div class="volume-row__track"></div>

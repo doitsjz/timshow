@@ -38,7 +38,7 @@
   // ---------- Settings 持久化 ----------
   var Settings = {
     key: 'timer-settings',
-    defaults: { sound: 'bell', volume: 70, customDuration: 25, customSeconds: 60, lastUnit: 'sec', customSoundUrl: '' },
+    defaults: { sound: 'bell', volume: 70, customDuration: 25, customSeconds: 60, lastUnit: 'sec', customSoundUrl: '', lang: 'zh' },
     data: null,
     load: function () {
       try {
@@ -56,6 +56,89 @@
     },
     get: function (k) { return this.data[k]; },
     set: function (k, v) { this.data[k] = v; this.save(); }
+  };
+
+  // ---------- I18N 中英文切换 ----------
+  var I18N = {
+    dict: {
+      zh: {
+        brand: '极简计时器', brandSub: 'STOPWATCH · TIMER',
+        tabStopwatch: '秒表', tabCountdown: '倒计时',
+        remaining: '剩余 · REMAINING', elapsed: '累计 · ELAPSED',
+        target: '目标', secTraining: '秒级训练',
+        presets: '时长预设 · PRESETS', unit: '单位：秒',
+        seconds: 'SECONDS · 秒级',
+        reaction: '反应', burst: '爆发', custom: '自定义',
+        start: '开始', pause: '暂停', reset: '重置',
+        settings: '设置', sound: '铃声', volume: '音量',
+        customSound: '自定义铃声', silent: '静音',
+        bell: '铃声', dingdong: '叮咚', buzzer: '蜂鸣',
+        preview: '试听', upload: '上传音频', clear: '清除',
+        langZh: '中', langEn: 'EN',
+        ariaSettings: '设置', ariaNotice: '通知', ariaLang: '切换语言',
+        presetsTitle: '时长预设'
+      },
+      en: {
+        brand: 'Minimal Timer', brandSub: 'STOPWATCH · TIMER',
+        tabStopwatch: 'STOPWATCH', tabCountdown: 'COUNTDOWN',
+        remaining: 'REMAINING', elapsed: 'ELAPSED',
+        target: 'Target', secTraining: 'Sec training',
+        presets: 'DURATION · PRESETS', unit: 'Unit: sec',
+        seconds: 'SECONDS',
+        reaction: 'Reaction', burst: 'Burst', custom: 'Custom',
+        start: 'Start', pause: 'Pause', reset: 'Reset',
+        settings: 'Settings', sound: 'Sound', volume: 'Volume',
+        customSound: 'Custom Sound', silent: 'Silent',
+        bell: 'Bell', dingdong: 'Ding-Dong', buzzer: 'Buzzer',
+        preview: 'Preview', upload: 'Upload', clear: 'Clear',
+        langZh: '中', langEn: 'EN',
+        ariaSettings: 'Settings', ariaNotice: 'Notice', ariaLang: 'Switch language',
+        presetsTitle: 'Duration'
+      }
+    },
+    cur: 'zh',
+    // 动态文本占位替换：{0} {1}...
+    fmt: function (s) {
+      var args = arguments;
+      return s.replace(/\{(\d+)\}/g, function (m, i) { return args[+i + 1] || ''; });
+    },
+    t: function (key) {
+      var d = this.dict[this.cur] || this.dict.zh;
+      return d[key] !== undefined ? d[key] : (this.dict.zh[key] !== undefined ? this.dict.zh[key] : key);
+    },
+    apply: function () {
+      var d = this.dict[this.cur] || this.dict.zh;
+      document.documentElement.lang = this.cur === 'zh' ? 'zh-CN' : 'en';
+      document.querySelectorAll('[data-i18n]').forEach(function (el) {
+        var key = el.getAttribute('data-i18n');
+        if (d[key] !== undefined) el.textContent = d[key];
+      });
+      document.querySelectorAll('[data-i18n-aria]').forEach(function (el) {
+        var key = el.getAttribute('data-i18n-aria');
+        if (d[key] !== undefined) el.setAttribute('aria-label', d[key]);
+      });
+      document.querySelectorAll('[data-i18n-ph]').forEach(function (el) {
+        var key = el.getAttribute('data-i18n-ph');
+        if (d[key] !== undefined) el.setAttribute('placeholder', d[key]);
+      });
+      // 切换按钮激活态
+      document.querySelectorAll('.lang-seg button').forEach(function (b) {
+        var l = b.getAttribute('data-lang');
+        b.className = (l === I18N.cur) ? 'on' : '';
+        b.setAttribute('aria-pressed', l === I18N.cur ? 'true' : 'false');
+      });
+    },
+    set: function (lang) {
+      this.cur = lang;
+      Settings.set('lang', lang);
+      this.apply();
+      // 触发动态文本刷新（目标标签等）
+      if (window.__i18nRefresh) window.__i18nRefresh();
+    },
+    init: function () {
+      this.cur = Settings.get('lang') || 'zh';
+      this.apply();
+    }
   };
 
   // ---------- SoundEngine 合成铃声 ----------
@@ -316,9 +399,11 @@
       }
     };
 
+    var swRunning = false;
     function setStartButton(running) {
-      if (running) swapIcon(btnStart, 'pause', '暂停');
-      else swapIcon(btnStart, 'play', '开始');
+      swRunning = running;
+      if (running) swapIcon(btnStart, 'pause', I18N.t('pause'));
+      else swapIcon(btnStart, 'play', I18N.t('start'));
     }
 
     if (btnStart) btnStart.addEventListener('click', function () {
@@ -333,6 +418,8 @@
 
     // 初始化
     engine.onTick(0);
+    // 秒表页语言切换刷新：重绘开始按钮文本
+    window.__i18nRefresh = function () { setStartButton(swRunning); };
   }
 
   // ---------- 倒计时页面初始化 ----------
@@ -372,17 +459,34 @@
       else { setTimeout(function(){ SoundEngine.flashScreen(); }, 100); }
       setStartButton(false);
     };
-
+    var cdRunning = false;
     function setStartButton(running) {
-      if (running) swapIcon(btnStart, 'pause', '暂停');
-      else swapIcon(btnStart, 'play', '开始');
+      cdRunning = running;
+      if (running) swapIcon(btnStart, 'pause', I18N.t('pause'));
+      else swapIcon(btnStart, 'play', I18N.t('start'));
     }
 
     var targetLabel = $('#target-label');
     // 当前单位与值（用于互斥与持久化恢复）
     var currentUnit = 'min'; // 'min' | 'sec'
     var currentVal = duration;
+    // 注册语言切换时刷新动态文本
+    window.__i18nRefresh = function () {
+      updateTargetLabel(currentUnit, currentVal);
+      updatePresetActive(currentUnit, currentVal);
+      setStartButton(cdRunning);
+    };
 
+    function updateTargetLabel(unit, val) {
+      if (!targetLabel) return;
+      var L = I18N;
+      if (unit === 'min') {
+        var tag = val === 25 ? (L.cur === 'en' ? 'Pomodoro' : '番茄钟默认') : (val === 5 ? (L.cur === 'en' ? 'Short break' : '短休默认') : (L.cur === 'en' ? 'Min' : '分钟档'));
+        targetLabel.textContent = L.t('target') + ' ' + val + ' ' + (L.cur === 'en' ? 'min' : '分钟') + ' · ' + tag;
+      } else {
+        targetLabel.textContent = L.t('target') + ' ' + val + ' ' + (L.cur === 'en' ? 's' : '秒') + ' · ' + L.t('secTraining');
+      }
+    }
     function updatePresetActive(unit, val) {
       $$('.preset').forEach(function (p) {
         var pUnit = p.getAttribute('data-unit') || 'min';
@@ -415,16 +519,6 @@
           sub.classList.toggle('text-muted-foreground', !isActive);
         }
       });
-    }
-
-    function updateTargetLabel(unit, val) {
-      if (!targetLabel) return;
-      if (unit === 'min') {
-        var tag = val === 25 ? '番茄钟默认' : (val === 5 ? '短休默认' : '分钟档');
-        targetLabel.textContent = '目标 ' + val + ' 分钟 · ' + tag;
-      } else {
-        targetLabel.textContent = '目标 ' + val + ' 秒 · 秒级训练';
-      }
     }
 
     function setCustomInputEnabled(enabled) {
@@ -699,7 +793,17 @@
     var page = body.getAttribute('data-page');
     Settings.load();
     SoundEngine.setVolume(Settings.get('volume'));
+    I18N.init(); // 初始化中英文切换
     initTabs(); // 所有页面都初始化顶部导航
+    // 绑定语言切换按钮
+    var langBtns = document.querySelectorAll('.lang-seg button');
+    for (var i = 0; i < langBtns.length; i++) {
+      (function (b) {
+        b.addEventListener('click', function () {
+          I18N.set(b.getAttribute('data-lang'));
+        });
+      })(langBtns[i]);
+    }
     if (page === 'stopwatch') initStopwatch();
     else if (page === 'countdown') initCountdown();
     else if (page === 'settings') initSettings();

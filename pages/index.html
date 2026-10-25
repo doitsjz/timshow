@@ -171,6 +171,9 @@
         mask-position: center;
         background-color: currentColor;
       }
+      .lang-seg button { transition: all .2s; cursor: pointer; border: 0; background: transparent; }
+      .lang-seg button:not(.on) { color: var(--tm-muted-foreground); }
+      .lang-seg button:not(.on):hover { color: var(--tm-foreground); }
     </style>
 <!-- 百度统计 -->
 <script>
@@ -195,17 +198,21 @@ var _hmt = _hmt || [];
             <i data-lucide="timer" class="w-4 h-4 text-primary"></i>
           </span>
           <div class="flex flex-col leading-none">
-            <span class="text-[14px] font-semibold text-foreground">极简计时器</span>
-            <span class="text-[10px] tracking-[0.25em] text-muted-foreground">STOPWATCH · TIMER</span>
+            <span class="text-[14px] font-semibold text-foreground" data-i18n="brand">极简计时器</span>
+            <span class="text-[10px] tracking-[0.25em] text-muted-foreground" data-i18n="brandSub">STOPWATCH · TIMER</span>
           </div>
         </div>
         <div class="flex items-center gap-2">
-          <button type="button" aria-label="通知" class="grid place-items-center w-9 h-9 rounded-full bg-card border border-border text-muted-foreground hover:text-foreground transition-colors">
+          <button type="button" aria-label="通知" data-i18n-aria="ariaNotice" class="grid place-items-center w-9 h-9 rounded-full bg-card border border-border text-muted-foreground hover:text-foreground transition-colors">
             <i data-lucide="bell" class="w-4 h-4"></i>
           </button>
-          <button data-dom-id="icon-settings" type="button" aria-label="设置" class="grid place-items-center w-9 h-9 rounded-full bg-card border border-border text-muted-foreground hover:text-foreground transition-colors">
+          <button data-dom-id="icon-settings" type="button" aria-label="设置" data-i18n-aria="settings" class="grid place-items-center w-9 h-9 rounded-full bg-card border border-border text-muted-foreground hover:text-foreground transition-colors">
             <i data-lucide="settings" class="w-4 h-4"></i>
           </button>
+          <div class="lang-seg inline-flex items-center gap-0.5 rounded-full border border-border bg-muted/60 p-0.5" role="group" aria-label="切换语言">
+            <button type="button" data-lang="zh" class="on px-2.5 py-1 rounded-full text-[11px] font-semibold text-primary-foreground" style="background:linear-gradient(135deg,#38F2C6,#22D3B0);box-shadow:0 0 8px rgba(56,242,198,.4)" aria-pressed="true">中</button>
+            <button type="button" data-lang="en" class="px-2.5 py-1 rounded-full text-[11px] font-semibold text-muted-foreground" aria-pressed="false">EN</button>
+          </div>
         </div>
       </div>
     </header>
@@ -217,11 +224,11 @@ var _hmt = _hmt || [];
         <div class="tabs__pill inline-flex items-center gap-1.5 bg-muted/60 border border-border rounded-full p-1.5">
           <button data-dom-id="tab-countdown" class="tab inline-flex items-center gap-2 px-7 py-2.5 rounded-full text-[18px] font-semibold tracking-[0.04em] text-muted-foreground">
             <i data-lucide="hourglass" class="w-[18px] h-[18px]"></i>
-            <span>倒计时</span>
+            <span data-i18n="tabCountdown">倒计时</span>
           </button>
           <button data-dom-id="tab-stopwatch" class="tab tab--active inline-flex items-center gap-2 px-7 py-2.5 rounded-full text-[18px] font-semibold tracking-[0.04em] text-primary-foreground" style="background:linear-gradient(135deg,#38F2C6 0%,#A8FFE8 100%);box-shadow:0 0 18px rgba(56,242,198,.55),0 0 40px rgba(56,242,198,.25);">
             <i data-lucide="timer" class="w-[18px] h-[18px]"></i>
-            <span>秒表</span>
+            <span data-i18n="tabStopwatch">秒表</span>
           </button>
         </div>
         <span class="tabs__indicator" aria-hidden="true"></span>
@@ -229,7 +236,7 @@ var _hmt = _hmt || [];
 
       <!-- Display -->
       <section class="display-block flex flex-col items-center gap-3" aria-label="计时显示">
-        <span class="text-[11px] tracking-[0.3em] text-muted-foreground">已用时 · ELAPSED</span>
+        <span class="text-[11px] tracking-[0.3em] text-muted-foreground" data-i18n="elapsed">已用时 · ELAPSED</span>
         <div class="display__digits font-mono tabular-nums leading-none tracking-tight text-foreground" aria-live="polite">
           <span class="display__main">00:00</span><span class="display__ms">.000</span>
         </div>
@@ -261,7 +268,7 @@ var _hmt = _hmt || [];
         </button>
         <button data-dom-id="btn-reset" type="button" class="btn inline-flex items-center gap-2 rounded-full px-6 py-3 bg-transparent border border-border text-muted-foreground hover:text-foreground transition-colors">
           <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
-          <span>重置</span>
+          <span data-i18n="reset">重置</span>
         </button>
       </section>
 

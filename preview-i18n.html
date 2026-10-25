@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>中英文切换预览 · i18n Preview</title>
+<style>
+:root{
+  --bg:#070B0F; --fg:#E6EDF3; --card:#0F151B; --muted:#1B232C;
+  --mfg:#8B97A5; --border:#1F2A35; --primary:#38F2C6; --pfg:#04140F;
+  --input:#16202A; --radius:14px;
+  --font-sans:"Inter","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --font-mono:"JetBrains Mono","SFMono-Regular","Consolas",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-sans);min-height:100vh;padding:0}
+.bg-texture{position:fixed;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(56,242,198,.06), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(56,242,198,.04), transparent 60%);
+}
+.wrap{position:relative;max-width:680px;margin:0 auto;padding:24px 20px 60px}
+
+/* 顶栏 */
+.topbar{display:flex;align-items:center;justify-content:space-between;
+  padding:12px 0;border-bottom:1px solid var(--border);margin-bottom:32px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand__logo{width:28px;height:28px;border-radius:8px;
+  background:rgba(56,242,198,.1);border:1px solid rgba(56,242,198,.2);
+  display:grid;place-items:center;color:var(--primary);font-size:14px}
+.brand__name{display:flex;flex-direction:column;line-height:1}
+.brand__name b{font-size:14px;font-weight:600}
+.brand__name span{font-size:10px;letter-spacing:.25em;color:var(--mfg);margin-top:2px}
+
+/* Segmented 语言切换（D 方案） */
+.lang-seg{display:inline-flex;align-items:center;gap:2px;
+  background:var(--muted);border:1px solid var(--border);border-radius:999px;padding:2px}
+.lang-seg button{border:0;background:transparent;color:var(--mfg);
+  font-size:12px;font-weight:600;letter-spacing:.05em;
+  padding:5px 14px;border-radius:999px;cursor:pointer;transition:all .2s}
+.lang-seg button.on{background:linear-gradient(135deg,#38F2C6,#22D3B0);
+  color:var(--pfg);box-shadow:0 0 12px rgba(56,242,198,.45),0 0 4px rgba(56,242,198,.6)}
+
+/* Tab */
+.tabs{display:inline-flex;align-items:center;gap:2px;
+  background:rgba(27,35,44,.6);border-radius:999px;padding:4px;margin-bottom:28px}
+.tab{display:inline-flex;align-items:center;gap:6px;
+  padding:7px 18px;border-radius:999px;font-size:16px;color:var(--mfg);
+  cursor:pointer;border:1px solid transparent;transition:all .2s}
+.tab.on{background:var(--card);color:var(--fg);border-color:var(--border);
+  font-weight:500}
+
+/* 显示区 */
+.display{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:28px}
+.display .cap{font-size:11px;letter-spacing:.3em;color:var(--mfg)}
+.display .digits{font-family:var(--font-mono);font-size:64px;font-weight:700;
+  line-height:1;letter-spacing:-.02em;color:#fff;
+  text-shadow:0 0 18px rgba(56,242,198,.25),0 0 4px rgba(56,242,198,.4)}
+.display .digits .ms{color:var(--primary);font-size:32px}
+.display .target{font-size:11px;color:var(--mfg)}
+
+/* 进度条 */
+.progress{height:8px;background:var(--input);border-radius:999px;
+  margin-bottom:32px;overflow:hidden;position:relative}
+.progress__fill{height:100%;width:100%;border-radius:999px;
+  background:linear-gradient(90deg,#0E7C6B,#22D3B0,#7FFFE0);
+  box-shadow:0 0 14px rgba(56,242,198,.5),0 0 4px rgba(56,242,198,.7);
+  position:relative}
+.progress__fill::after{content:"";position:absolute;inset:0;border-radius:999px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);
+  background-size:50% 100%;animation:sweep 2.2s linear infinite}
+@keyframes sweep{0%{background-position:-50% 0}100%{background-position:150% 0}}
+
+/* 预设 */
+.presets{background:rgba(15,21,27,.7);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px;margin-bottom:32px}
+.presets__head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.presets__head .l{font-size:11px;letter-spacing:.25em;color:var(--mfg)}
+.presets__head .r{font-size:11px;color:var(--mfg);font-family:var(--font-mono)}
+.presets__sub{font-size:10px;letter-spacing:.25em;color:rgba(139,151,165,.7);margin-bottom:10px}
+.presets__row{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.preset{border:1px solid var(--border);background:transparent;border-radius:8px;
+  padding:10px 18px;display:flex;flex-direction:column;align-items:center;gap:2px;
+  cursor:pointer;transition:all .2s;color:var(--fg)}
+.preset:hover{background:rgba(27,35,44,.5)}
+.preset.on{border-color:var(--primary);background:rgba(56,242,198,.08)}
+.preset .v{font-family:var(--font-mono);font-size:18px}
+.preset .v .u{font-size:12px;color:var(--mfg)}
+.preset .l{font-size:10px;color:var(--mfg)}
+.custom-input{width:48px;background:transparent;border:0;text-align:center;
+  font-family:var(--font-mono);font-size:18px;color:var(--fg);outline:0}
+
+/* 控制按钮 */
+.controls{display:flex;justify-content:center;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:8px;
+  padding:12px 26px;border-radius:999px;font-size:14px;font-weight:600;
+  cursor:pointer;border:1px solid var(--border);background:var(--card);
+  color:var(--fg);transition:all .2s}
+.btn:hover{background:var(--muted)}
+.btn--primary{background:linear-gradient(135deg,#38F2C6,#22D3B0);
+  color:var(--pfg);border-color:transparent;
+  box-shadow:0 0 16px rgba(56,242,198,.35)}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor}
+
+.note{margin-top:40px;padding:14px 16px;border:1px dashed var(--border);
+  border-radius:10px;font-size:12px;color:var(--mfg);line-height:1.6}
+</style>
+</head>
+<body>
+<div class="bg-texture"></div>
+<div class="wrap">
+
+  <!-- 顶栏（含 D：Segmented 语言切换） -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand__logo">⏱</span>
+      <span class="brand__name">
+        <b data-i18n="brand">极简计时器</b>
+        <span data-i18n="brandSub">STOPWATCH · TIMER</span>
+      </span>
+    </div>
+    <div class="lang-seg" role="group" aria-label="Language">
+      <button id="lang-zh" class="on" type="button">中</button>
+      <button id="lang-en" type="button">EN</button>
+    </div>
+  </header>
+
+  <!-- Tab（倒计时左、秒表右） -->
+  <nav class="tabs" aria-label="mode">
+    <div class="tab on" data-i18n="tabCountdown">倒计时</div>
+    <div class="tab" data-i18n="tabStopwatch">秒表</div>
+  </nav>
+
+  <!-- 显示区 -->
+  <section class="display">
+    <span class="cap" data-i18n="remaining">剩余 · REMAINING</span>
+    <div class="digits">00:60<span class="ms">.000</span></div>
+    <span class="target" data-i18n="target">目标 60 秒 · 秒级训练</span>
+  </section>
+
+  <!-- 进度条 -->
+  <div class="progress"><div class="progress__fill"></div></div>
+
+  <!-- 预设 -->
+  <section class="presets">
+    <div class="presets__head">
+      <span class="l" data-i18n="presets">时长预设 · PRESETS</span>
+      <span class="r" data-i18n="unit">单位：秒</span>
+    </div>
+    <div class="presets__sub" data-i18n="seconds">SECONDS · 秒级</div>
+    <div class="presets__row">
+      <div class="preset"><span class="v">15<span class="u">s</span></span><span class="l" data-i18n="reaction">反应</span></div>
+      <div class="preset"><span class="v">30<span class="u">s</span></span><span class="l" data-i18n="burst">爆发</span></div>
+      <div class="preset on"><span class="v"><input class="custom-input" value="60">s</span><span class="l" data-i18n="custom">自定义</span></div>
+    </div>
+  </section>
+
+  <!-- 控制按钮 -->
+  <div class="controls">
+    <button class="btn btn--primary"><span class="dot"></span><span data-i18n="start">开始</span></button>
+    <button class="btn"><span data-i18n="reset">重置</span></button>
+  </div>
+
+  <p class="note" data-i18n="note">点击右上角「中 / EN」一键切换整页语言。所有带 data-i18n 的文本会立即更新，语言偏好持久化到 localStorage。</p>
+</div>
+
+<script>
+var I18N={
+  zh:{
+    brand:"极简计时器",brandSub:"STOPWATCH · TIMER",
+    tabCountdown:"倒计时",tabStopwatch:"秒表",
+    remaining:"剩余 · REMAINING",
+    target:"目标 60 秒 · 秒级训练",
+    presets:"时长预设 · PRESETS",unit:"单位：秒",
+    seconds:"SECONDS · 秒级",
+    reaction:"反应",burst:"爆发",custom:"自定义",
+    start:"开始",reset:"重置",
+    note:"点击右上角「中 / EN」一键切换整页语言。所有带 data-i18n 的文本会立即更新，语言偏好持久化到 localStorage。"
+  },
+  en:{
+    brand:"Minimal Timer",brandSub:"STOPWATCH · TIMER",
+    tabCountdown:"COUNTDOWN",tabStopwatch:"STOPWATCH",
+    remaining:"REMAINING",
+    target:"Target 60s · Sec training",
+    presets:"DURATION · PRESETS",unit:"Unit: sec",
+    seconds:"SECONDS",
+    reaction:"Reaction",burst:"Burst",custom:"Custom",
+    start:"Start",reset:"Reset",
+    note:"Click 中 / EN at top-right to toggle the whole page language. All data-i18n texts update instantly, preference persists in localStorage."
+  }
+};
+var cur='zh';
+function applyLang(l){
+  cur=l;
+  document.documentElement.lang = l==='zh'?'zh-CN':'en';
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var k=el.getAttribute('data-i18n');
+    if(I18N[l][k]) el.textContent=I18N[l][k];
+  });
+  document.getElementById('lang-zh').className = l==='zh'?'on':'';
+  document.getElementById('lang-en').className = l==='en'?'on':'';
+}
+document.getElementById('lang-zh').onclick=function(){applyLang('zh')};
+document.getElementById('lang-en').onclick=function(){applyLang('en')};
+</script>
+</body>
+</html>

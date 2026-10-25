@@ -171,6 +171,9 @@
         mask-position: center;
         background-color: currentColor;
       }
+      .lang-seg button { transition: all .2s; cursor: pointer; border: 0; background: transparent; }
+      .lang-seg button:not(.on) { color: var(--tm-muted-foreground); }
+      .lang-seg button:not(.on):hover { color: var(--tm-foreground); }
     </style>
 <!-- 百度统计 -->
 <script>
@@ -195,17 +198,21 @@ var _hmt = _hmt || [];
             <i data-lucide="timer" class="w-4 h-4 text-primary"></i>
           </span>
           <div class="flex flex-col leading-none">
-            <span class="text-[14px] font-semibold text-foreground">极简计时器</span>
-            <span class="text-[10px] tracking-[0.25em] text-muted-foreground">STOPWATCH · TIMER</span>
+            <span class="text-[14px] font-semibold text-foreground" data-i18n="brand">极简计时器</span>
+            <span class="text-[10px] tracking-[0.25em] text-muted-foreground" data-i18n="brandSub">STOPWATCH · TIMER</span>
           </div>
         </div>
         <div class="flex items-center gap-2">
-          <button type="button" aria-label="通知" class="grid place-items-center w-9 h-9 rounded-full bg-card border border-border text-muted-foreground hover:text-foreground transition-colors">
+          <button type="button" aria-label="通知" data-i18n-aria="ariaNotice" class="grid place-items-center w-9 h-9 rounded-full bg-card border border-border text-muted-foreground hover:text-foreground transition-colors">
             <i data-lucide="bell" class="w-4 h-4"></i>
           </button>
-          <button data-dom-id="icon-settings" type="button" aria-label="设置" class="grid place-items-center w-9 h-9 rounded-full bg-card border border-border text-muted-foreground hover:text-foreground transition-colors">
+          <button data-dom-id="icon-settings" type="button" aria-label="设置" data-i18n-aria="settings" class="grid place-items-center w-9 h-9 rounded-full bg-card border border-border text-muted-foreground hover:text-foreground transition-colors">
             <i data-lucide="settings" class="w-4 h-4"></i>
           </button>
+          <div class="lang-seg inline-flex items-center gap-0.5 rounded-full border border-border bg-muted/60 p-0.5" role="group" aria-label="切换语言">
+            <button type="button" data-lang="zh" class="on px-2.5 py-1 rounded-full text-[11px] font-semibold text-primary-foreground" style="background:linear-gradient(135deg,#38F2C6,#22D3B0);box-shadow:0 0 8px rgba(56,242,198,.4)" aria-pressed="true">中</button>
+            <button type="button" data-lang="en" class="px-2.5 py-1 rounded-full text-[11px] font-semibold text-muted-foreground" aria-pressed="false">EN</button>
+          </div>
         </div>
       </div>
     </header>
@@ -217,11 +224,11 @@ var _hmt = _hmt || [];
         <div class="tabs__pill inline-flex items-center gap-1.5 bg-muted/60 border border-border rounded-full p-1.5">
           <button data-dom-id="tab-countdown" class="tab tab--active inline-flex items-center gap-2 px-7 py-2.5 rounded-full text-[18px] font-semibold tracking-[0.04em] text-primary-foreground" style="background:linear-gradient(135deg,#38F2C6 0%,#A8FFE8 100%);box-shadow:0 0 18px rgba(56,242,198,.55),0 0 40px rgba(56,242,198,.25);">
             <i data-lucide="hourglass" class="w-[18px] h-[18px]"></i>
-            <span>倒计时</span>
+            <span data-i18n="tabCountdown">倒计时</span>
           </button>
           <button data-dom-id="tab-stopwatch" class="tab inline-flex items-center gap-2 px-7 py-2.5 rounded-full text-[18px] font-semibold tracking-[0.04em] text-muted-foreground">
             <i data-lucide="timer" class="w-[18px] h-[18px]"></i>
-            <span>秒表</span>
+            <span data-i18n="tabStopwatch">秒表</span>
           </button>
         </div>
         <span class="tabs__indicator" aria-hidden="true"></span>
@@ -229,7 +236,7 @@ var _hmt = _hmt || [];
 
       <!-- Display (countdown: remaining) -->
       <section class="display-block flex flex-col items-center gap-3" aria-label="倒计时显示">
-        <span class="text-[11px] tracking-[0.3em] text-muted-foreground">剩余 · REMAINING</span>
+        <span class="text-[11px] tracking-[0.3em] text-muted-foreground" data-i18n="remaining">剩余 · REMAINING</span>
         <div class="display__digits font-mono tabular-nums leading-none tracking-tight text-foreground" aria-live="polite">
           <span class="display__main">00:15</span><span class="display__ms">.000</span>
           </div>
@@ -246,29 +253,29 @@ var _hmt = _hmt || [];
       <!-- Presets (replaces laps) -->
       <section class="presets-card bg-card/70 rounded-lg border border-border" aria-label="时长预设">
         <div class="flex items-center justify-between px-4 pt-3.5 pb-2">
-          <span class="text-[11px] tracking-[0.25em] text-muted-foreground">时长预设 · PRESETS</span>
-          <span class="text-[11px] text-muted-foreground font-mono">单位：秒</span>
+          <span class="text-[11px] tracking-[0.25em] text-muted-foreground" data-i18n="presets">时长预设 · PRESETS</span>
+          <span class="text-[11px] text-muted-foreground font-mono" data-i18n="unit">单位：秒</span>
         </div>
         <!-- 秒级档（唯一预设） -->
         <div class="px-4 pb-2">
-          <span class="block text-[10px] tracking-[0.25em] text-muted-foreground/70 mb-2">SECONDS · 秒级</span>
+          <span class="block text-[10px] tracking-[0.25em] text-muted-foreground/70 mb-2" data-i18n="seconds">SECONDS · 秒级</span>
         </div>
         <div class="flex flex-wrap items-stretch justify-center gap-2 px-4 pb-4">
           <button data-dom-id="preset-15s" data-unit="sec" type="button" class="preset rounded-md border border-border bg-transparent px-5 py-2.5 flex flex-col items-center gap-0.5 hover:bg-muted/50 transition-colors">
             <span class="font-mono text-[18px] text-foreground">15<span class="text-[12px] text-muted-foreground">s</span></span>
-            <span class="text-[10px] text-muted-foreground">反应</span>
+            <span class="text-[10px] text-muted-foreground" data-i18n="reaction">反应</span>
           </button>
           <button data-dom-id="preset-30s" data-unit="sec" type="button" class="preset rounded-md border border-border bg-transparent px-5 py-2.5 flex flex-col items-center gap-0.5 hover:bg-muted/50 transition-colors">
             <span class="font-mono text-[18px] text-foreground">30<span class="text-[12px] text-muted-foreground">s</span></span>
-            <span class="text-[10px] text-muted-foreground">爆发</span>
+            <span class="text-[10px] text-muted-foreground" data-i18n="burst">爆发</span>
           </button>
           <!-- 自定义秒数 -->
           <div data-dom-id="preset-custom" data-unit="sec" class="preset rounded-md border border-border bg-transparent px-5 py-2.5 flex flex-col items-center gap-0.5 hover:bg-muted/50 transition-colors cursor-text">
             <div class="flex items-baseline gap-0.5">
-              <input data-dom-id="custom-seconds" type="number" min="1" max="600" step="1" value="60" placeholder="自定义" class="w-12 bg-transparent text-center font-mono text-[18px] text-foreground placeholder:text-muted-foreground/60 focus:outline-none" aria-label="自定义秒数（1-600）" />
+              <input data-dom-id="custom-seconds" type="number" min="1" max="600" step="1" value="60" placeholder="自定义" data-i18n-ph="custom" class="w-12 bg-transparent text-center font-mono text-[18px] text-foreground placeholder:text-muted-foreground/60 focus:outline-none" aria-label="自定义秒数（1-600）" />
               <span class="font-mono text-[12px] text-muted-foreground">s</span>
             </div>
-            <span class="text-[10px] text-muted-foreground">自定义</span>
+            <span class="text-[10px] text-muted-foreground" data-i18n="custom">自定义</span>
           </div>
         </div>
         <!-- Custom duration input (minute only; disabled when second preset active) -->
@@ -282,7 +289,7 @@ var _hmt = _hmt || [];
         </button>
         <button data-dom-id="btn-reset" type="button" class="btn inline-flex items-center gap-2 rounded-full px-6 py-3 bg-transparent border border-border text-muted-foreground hover:text-foreground transition-colors">
           <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
-          <span>重置</span>
+          <span data-i18n="reset">重置</span>
         </button>
       </section>
 
