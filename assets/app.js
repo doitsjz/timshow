@@ -422,14 +422,19 @@
       setCustomInputEnabled(true);
     }
 
-    function setDurationSeconds(seconds) {
-      seconds = Math.max(1, Math.min(600, parseInt(seconds, 10) || 30));
+    function setDurationSeconds(seconds, syncInput) {
+      var raw = parseInt(seconds, 10);
+      seconds = Math.max(1, Math.min(600, raw || 30));
       currentUnit = 'sec'; currentVal = seconds;
       engine.targetMs = seconds * 1000;
       engine.reset();
       Settings.set('customSeconds', seconds);
       Settings.set('lastUnit', 'sec');
       if (customInput) customInput.value = '';
+      // 同步回自定义秒数输入框，避免显示值与引擎 targetMs 不一致
+      if (syncInput && customSecondsInput && customSecondsInput.value !== String(seconds)) {
+        customSecondsInput.value = seconds;
+      }
       setStartButton(false);
       updatePresetActive('sec', seconds);
       updateTargetLabel('sec', seconds);
@@ -446,9 +451,8 @@
         var isCustom = p.getAttribute('data-dom-id') === 'preset-custom';
         if (isCustom) {
           var csv = customSecondsInput ? customSecondsInput.value : 120;
-          setDurationSeconds(csv);
-          Settings.set('customSeconds', Math.max(1, Math.min(600, parseInt(csv, 10) || 120)));
-          if (customSecondsInput) customSecondsInput.focus();
+          // 点击自定义档时同步回写夹紧值，保证输入框显示与引擎一致
+          setDurationSeconds(csv, true);
           return;
         }
         var val = parseInt(p.querySelector('.font-mono').textContent, 10);
@@ -465,6 +469,13 @@
           updateTargetLabel('sec', v);
           Settings.set('customSeconds', v);
         }
+      });
+      customSecondsInput.addEventListener('change', function () {
+        // 失焦/提交时把越界值夹紧到 1-600 并同步回输入框与引擎
+        var v = parseInt(customSecondsInput.value, 10);
+        if (isNaN(v) || v < 1) v = 30;
+        if (v > 600) v = 600;
+        setDurationSeconds(v, true);
       });
       customSecondsInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') { customSecondsInput.blur(); } });
     }
