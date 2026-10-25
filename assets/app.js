@@ -137,11 +137,21 @@
         var key = el.getAttribute('data-i18n-ph');
         if (d[key] !== undefined) el.setAttribute('placeholder', d[key]);
       });
-      // 切换按钮激活态
+      // 切换按钮激活态（同步内联 style，避免初始 HTML 内联样式残留）
       document.querySelectorAll('.lang-seg button').forEach(function (b) {
         var l = b.getAttribute('data-lang');
-        b.className = (l === I18N.cur) ? 'on' : '';
-        b.setAttribute('aria-pressed', l === I18N.cur ? 'true' : 'false');
+        var isOn = (l === I18N.cur);
+        b.className = isOn
+          ? 'on px-2.5 py-1 rounded-full text-[11px] font-semibold text-primary-foreground'
+          : 'px-2.5 py-1 rounded-full text-[11px] font-semibold text-muted-foreground';
+        b.setAttribute('aria-pressed', isOn ? 'true' : 'false');
+        if (isOn) {
+          b.style.background = 'linear-gradient(135deg,#38F2C6,#22D3B0)';
+          b.style.boxShadow = '0 0 8px rgba(56,242,198,.4)';
+        } else {
+          b.style.background = '';
+          b.style.boxShadow = '';
+        }
       });
     },
     set: function (lang) {
