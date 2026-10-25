@@ -230,32 +230,10 @@
       <section class="presets-card bg-card/70 rounded-lg border border-border" aria-label="时长预设">
         <div class="flex items-center justify-between px-4 pt-3.5 pb-2">
           <span class="text-[11px] tracking-[0.25em] text-muted-foreground">时长预设 · PRESETS</span>
-          <span class="text-[11px] text-muted-foreground font-mono">分钟 / 秒级</span>
+          <span class="text-[11px] text-muted-foreground font-mono">单位：秒</span>
         </div>
-        <!-- 分钟档 -->
+        <!-- 秒级档（唯一预设） -->
         <div class="px-4 pb-2">
-          <span class="block text-[10px] tracking-[0.25em] text-muted-foreground/70 mb-2">MINUTES · 分钟</span>
-        </div>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 px-4 pb-3">
-          <button data-dom-id="preset-5" data-unit="min" type="button" class="preset rounded-md border border-border bg-transparent px-3 py-2.5 flex flex-col items-center gap-0.5 hover:bg-muted/50 transition-colors">
-            <span class="font-mono text-[18px] text-foreground">05</span>
-            <span class="text-[10px] text-muted-foreground">短休</span>
-          </button>
-          <button data-dom-id="preset-15" data-unit="min" type="button" class="preset rounded-md border border-border bg-transparent px-3 py-2.5 flex flex-col items-center gap-0.5 hover:bg-muted/50 transition-colors">
-            <span class="font-mono text-[18px] text-foreground">15</span>
-            <span class="text-[10px] text-muted-foreground">回合</span>
-          </button>
-          <button data-dom-id="preset-25" data-unit="min" type="button" class="preset rounded-md border border-border bg-transparent px-3 py-2.5 flex flex-col items-center gap-0.5 hover:bg-muted/50 transition-colors">
-            <span class="font-mono text-[18px] text-foreground">25</span>
-            <span class="text-[10px] text-muted-foreground">番茄钟</span>
-          </button>
-          <button data-dom-id="preset-45" data-unit="min" type="button" class="preset rounded-md border border-border bg-transparent px-3 py-2.5 flex flex-col items-center gap-0.5 hover:bg-muted/50 transition-colors">
-            <span class="font-mono text-[18px] text-foreground">45</span>
-            <span class="text-[10px] text-muted-foreground">深度</span>
-          </button>
-        </div>
-        <!-- 秒级档 -->
-        <div class="px-4 pb-2 border-t border-border pt-3">
           <span class="block text-[10px] tracking-[0.25em] text-muted-foreground/70 mb-2">SECONDS · 秒级</span>
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 px-4 pb-4">
@@ -277,11 +255,6 @@
           </button>
         </div>
         <!-- Custom duration input (minute only; disabled when second preset active) -->
-        <div class="px-4 pb-4 flex items-center gap-2 border-t border-border pt-3" id="custom-duration-wrap">
-          <i data-lucide="settings-2" class="w-4 h-4 text-muted-foreground shrink-0"></i>
-          <input data-dom-id="custom-duration" type="text" inputmode="numeric" value="25" placeholder="自定义分钟" class="flex-1 bg-input border border-border rounded-md px-3 py-2 font-mono text-[14px] text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary disabled:opacity-40 disabled:cursor-not-allowed" aria-label="自定义时长（分钟）" />
-          <span class="text-[12px] text-muted-foreground shrink-0">分钟</span>
-        </div>
       </section>
 
       <!-- Controls (countdown) -->
@@ -408,7 +381,7 @@
         }
       </style>
     </main>
-    <script src="assets/app.js?v=10"></script>
+    <script src="assets/app.js?v=11"></script>
     <script>lucide.createIcons();</script>
 </body>
 </html>
