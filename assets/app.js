@@ -96,6 +96,7 @@
     bell: function () {
       if (!this.ctx) return;
       var now = this.ctx.currentTime;
+      // 持续 3 秒：三个谐波循环 2 次（每次 1.5s）
       [880, 1320, 1760].forEach(function (f, i) {
         var osc = this.ctx.createOscillator();
         var g = this.ctx.createGain();
@@ -103,18 +104,27 @@
         osc.frequency.setValueAtTime(f, now);
         g.gain.setValueAtTime(0, now);
         g.gain.linearRampToValueAtTime(0.25, now + 0.005 + i * 0.02);
-        g.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+        g.gain.exponentialRampToValueAtTime(0.001, now + 3.0);
         osc.connect(g); g.connect(this.master);
-        osc.start(now + i * 0.02); osc.stop(now + 1.4);
+        osc.start(now + i * 0.02); osc.stop(now + 3.2);
       }, this);
     },
-    // 叮咚：双音 高→低
+    // 叮咚：双音 高→低，每 0.75s 一组，重复 4 次凑够 3 秒
     dingdong: function () {
       if (!this.ctx) return;
-      this.beep(988, 0.25, 'sine', 0.3); // B5
-      setTimeout(function () { this.beep(659, 0.5, 'sine', 0.3); }.bind(this), 220); // E5
+      var self = this;
+      var stepMs = 750;
+      var repeat = 4;
+      for (var k = 0; k < repeat; k++) {
+        (function (delay) {
+          setTimeout(function () {
+            self.beep(988, 0.25, 'sine', 0.3); // B5
+            setTimeout(function () { self.beep(659, 0.5, 'sine', 0.3); }, 220); // E5
+          }, delay);
+        })(k * stepMs);
+      }
     },
-    // 蜂鸣：方波持续
+    // 蜂鸣：方波持续 3 秒
     buzzer: function () {
       if (!this.ctx) return;
       var now = this.ctx.currentTime;
@@ -124,10 +134,10 @@
       osc.frequency.setValueAtTime(440, now);
       g.gain.setValueAtTime(0, now);
       g.gain.linearRampToValueAtTime(0.2, now + 0.01);
-      g.gain.setValueAtTime(0.2, now + 0.8);
-      g.gain.exponentialRampToValueAtTime(0.001, now + 1.0);
+      g.gain.setValueAtTime(0.2, now + 2.8);
+      g.gain.exponentialRampToValueAtTime(0.001, now + 3.0);
       osc.connect(g); g.connect(this.master);
-      osc.start(now); osc.stop(now + 1.0);
+      osc.start(now); osc.stop(now + 3.0);
     },
     play: function (type, isPreview) {
       this.ensure();
