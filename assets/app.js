@@ -38,7 +38,7 @@
   // ---------- Settings 持久化 ----------
   var Settings = {
     key: 'timer-settings',
-    defaults: { sound: 'bell', volume: 70, customDuration: 25, customSeconds: 15, lastUnit: 'sec', customSoundUrl: '' },
+    defaults: { sound: 'bell', volume: 70, customDuration: 25, customSeconds: 60, lastUnit: 'sec', customSoundUrl: '' },
     data: null,
     load: function () {
       try {
@@ -340,7 +340,7 @@
     Settings.load();
     var duration = Settings.get('customDuration') || 25;
     var lastUnit = Settings.get('lastUnit') || 'sec';
-    var lastSeconds = Settings.get('customSeconds') || 15;
+    var lastSeconds = Settings.get('customSeconds') || 60;
     var engine = new TimerEngine({ mode: 'countdown', targetMs: duration * 60000 });
     window.__timer = engine;
 
@@ -475,7 +475,7 @@
         var unit = p.getAttribute('data-unit') || 'min';
         var isCustom = p.getAttribute('data-dom-id') === 'preset-custom';
         if (isCustom) {
-          var csv = customSecondsInput ? customSecondsInput.value : 120;
+          var csv = customSecondsInput ? customSecondsInput.value : 60;
           // 点击自定义档时同步回写夹紧值，保证输入框显示与引擎一致
           setDurationSeconds(csv, true);
           return;
@@ -527,8 +527,8 @@
     // 初始化：按上次记忆的单位档恢复
     if (lastUnit === 'sec') {
       if (customInput) customInput.value = '';
-      // 仅当上次选中的是自定义值（非 15/30/60）时，才覆盖输入框；否则保留 HTML 默认 120
-      if (customSecondsInput && lastSeconds !== 15 && lastSeconds !== 30 && lastSeconds !== 60) {
+      // 仅当上次选中的是自定义值（非 15/30）时，才覆盖输入框；否则保留 HTML 默认 60
+      if (customSecondsInput && lastSeconds !== 15 && lastSeconds !== 30) {
         customSecondsInput.value = lastSeconds;
       }
       setDurationSeconds(lastSeconds);
