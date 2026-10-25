@@ -260,15 +260,25 @@
     var clockTicks = $('#clock-ticks');
     var clockMain = $('#clock-main');
     var clockMs = $('#clock-ms');
-    // 生成 60 刻度（每 5 个为主刻度带数字）
+    // 生成 60 刻度（独立 .num 元素，counter-rotate 保持直立）
     if (clockTicks && !clockTicks.children.length) {
       for (var i = 0; i < 60; i++) {
         var s = document.createElement('span');
-        if (i % 5 === 0) {
-          s.className = 'major major-num';
-          s.setAttribute('data-n', i === 0 ? '60' : String(i));
-        }
         s.style.transform = 'translateX(-50%) rotate(' + (i * 6) + 'deg)';
+        s.style.transformOrigin = '50% 134px';
+        if (i % 5 === 0) {
+          s.className = 'major';
+          var n = document.createElement('span');
+          n.className = 'clock__num';
+          n.textContent = i === 0 ? '60' : String(i);
+          var rad = (i * 6 - 90) * Math.PI / 180;
+          var nx = 140 + Math.cos(rad) * 110;
+          var ny = 140 + Math.sin(rad) * 110;
+          n.style.left = nx + 'px';
+          n.style.top = ny + 'px';
+          n.style.transform = 'translate(-50%,-50%)';
+          clockTicks.appendChild(n);
+        }
         clockTicks.appendChild(s);
       }
     }
@@ -332,6 +342,39 @@
     var targetLabel = $('.display-block .text-\\[11px\\].text-muted-foreground:last-child');
     var customInput = $('[data-dom-id="custom-duration"]');
 
+    // 模拟时钟（D 方案：B + 进度环）
+    var handSec = $('#hand-sec');
+    var handMin = $('#hand-min');
+    var clockTicks = $('#clock-ticks');
+    var clockMain = $('#clock-main');
+    var clockMs = $('#clock-ms');
+    var ringFg = $('#ring-fg');
+    var RING_CIRC = 2 * Math.PI * 140; // r=140
+    // 生成刻度（独立 .num 元素，counter-rotate 保持直立）
+    if (clockTicks && !clockTicks.children.length) {
+      for (var i = 0; i < 60; i++) {
+        var s = document.createElement('span');
+        s.style.transform = 'translateX(-50%) rotate(' + (i * 6) + 'deg)';
+        s.style.transformOrigin = '50% 134px';
+        if (i % 5 === 0) {
+          s.className = 'major';
+          // 独立数字元素
+          var n = document.createElement('span');
+          n.className = 'clock__num';
+          n.textContent = i === 0 ? '60' : String(i);
+          var rad = (i * 6 - 90) * Math.PI / 180;
+          var nx = 140 + Math.cos(rad) * 110;
+          var ny = 140 + Math.sin(rad) * 110;
+          n.style.left = nx + 'px';
+          n.style.top = ny + 'px';
+          n.style.transform = 'translate(-50%,-50%)';
+          clockTicks.appendChild(n);
+        }
+        clockTicks.appendChild(s);
+      }
+    }
+    if (ringFg) { ringFg.setAttribute('stroke-dasharray', RING_CIRC); ringFg.setAttribute('stroke-dashoffset', 0); }
+
     var btnStart = $('[data-dom-id="btn-start"]');
     var btnReset = $('[data-dom-id="btn-reset"]');
     var btnSound = $('[data-dom-id="btn-sound"]');
@@ -342,9 +385,26 @@
       var f = formatElapsed(remaining);
       if (mainEl) mainEl.textContent = f.main;
       if (msEl) msEl.textContent = f.ms;
-      var pct = engine.targetMs > 0 ? (elapsed / engine.targetMs * 100) : 0;
-      if (pct > 100) pct = 100;
-      if (progressFill) progressFill.style.width = pct + '%';
+      // 时钟中心数字同步
+      if (clockMain) clockMain.textContent = f.main;
+      if (clockMs) clockMs.textContent = f.ms;
+      // 指针：秒针 = 剩余秒数 * 6°，分针 = 剩余分钟 * 6° + 秒数 * 0.1°
+      if (handSec || handMin) {
+        var totalSec = remaining / 1000;
+        var sec = totalSec % 60;
+        var min = Math.floor(totalSec / 60) % 60;
+        if (handSec) handSec.style.transform = 'translate(-50%,0) rotate(' + (sec * 6) + 'deg)';
+        if (handMin) handMin.style.transform = 'translate(-50%,0) rotate(' + (min * 6 + sec * 0.1) + 'deg)';
+      }
+      // 进度环：剩余比例（初始满圈 → 随计时缩短到 0）
+      var pct = engine.targetMs > 0 ? (elapsed / engine.targetMs) : 0;
+      if (pct > 1) pct = 1;
+      if (ringFg) {
+        // dashoffset = 周长 * 已流逝比例 → elapsed=0 时 offset=0（满圈），elapsed=target 时 offset=周长（空环）
+        ringFg.setAttribute('stroke-dashoffset', String(RING_CIRC * pct));
+      }
+      // 兼容：若仍存在进度条（旧页面），显示剩余
+      if (progressFill) progressFill.style.width = ((1 - pct) * 100) + '%';
     };
     engine.onFinish = function () {
       var soundType = Settings.get('sound');

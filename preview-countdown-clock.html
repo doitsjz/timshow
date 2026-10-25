@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>倒计时时钟改进预览</title>
+<script src="https://unpkg.com/@tailwindcss/browser@4/dist/index.global.js"></script>
+<style>
+:root{
+  --tm-primary:#38F2C6; --tm-background:#070B0F; --tm-foreground:#E6EDF3;
+  --tm-card:#0F151B; --tm-border:#1F2A35; --tm-muted-foreground:#8B97A5;
+}
+body{background:var(--tm-background);color:var(--tm-foreground);font-family:"Inter","PingFang SC",system-ui,sans-serif;}
+.font-mono{font-family:"JetBrains Mono","Cascadia Code",monospace;}
+.label{font-size:11px;letter-spacing:.25em;color:var(--tm-muted-foreground);}
+.label-sub{font-size:11px;color:var(--tm-muted-foreground);}
+.section-title{font-size:13px;font-weight:600;}
+.card{background:rgba(15,21,27,.7);border:1px solid var(--tm-border);border-radius:14px;padding:24px;}
+.gap-box{margin-bottom:36px;}
+
+.digits{font-size:clamp(48px,9vw,120px);line-height:1;letter-spacing:-.02em;}
+
+/* ============ A · 当前（问题版） ============ */
+.clock-a{
+  position:relative;width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle at 50% 50%, #0F151B 0%, #070B0F 70%);
+  border:1px solid rgba(56,242,198,.18);
+  box-shadow:inset 0 0 40px rgba(56,242,198,.08), 0 0 30px rgba(56,242,198,.12);
+  margin:0 auto;
+}
+.clock-a .ticks{position:absolute;inset:0;border-radius:50%;}
+.clock-a .ticks span{
+  position:absolute;left:50%;top:0;width:2px;height:8px;
+  background:rgba(139,151,165,.35);transform-origin:50% 140px;
+}
+.clock-a .ticks span.major{height:14px;background:rgba(56,242,198,.6);}
+.clock-a .ticks span.major-num::after{
+  content:attr(data-n);position:absolute;left:50%;top:18px;
+  transform:translateX(-50%);font-size:11px;
+  color:rgba(139,151,165,.7);font-family:"JetBrains Mono",monospace;
+}
+.clock-a .center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;}
+.clock-a .center .t{font-family:"JetBrains Mono",monospace;font-size:30px;font-weight:600;color:var(--tm-foreground);}
+.clock-a .center .ms{font-size:14px;color:var(--tm-muted-foreground);margin-left:4px;}
+.clock-a .cap{font-size:9px;letter-spacing:.3em;color:var(--tm-muted-foreground);margin-top:6px;}
+.clock-a .h-sec{
+  position:absolute;left:50%;top:50%;width:2px;height:110px;
+  background:linear-gradient(to top,transparent,#38F2C6 30%,#A8FFE8);
+  transform-origin:50% 0;transform:translate(-50%,0) rotate(240deg);
+  box-shadow:0 0 8px rgba(56,242,198,.7);border-radius:999px;
+}
+.clock-a .h-min{
+  position:absolute;left:50%;top:50%;width:3px;height:75px;
+  background:linear-gradient(to top,transparent,#A8FFE8 20%,#E6EDF3);
+  transform-origin:50% 0;transform:translate(-50%,0) rotate(120deg);
+  box-shadow:0 0 6px rgba(168,255,232,.4);border-radius:999px;
+}
+.clock-a .hub{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:10px;height:10px;border-radius:50%;background:#A8FFE8;
+  box-shadow:0 0 12px #38F2C6,0 0 24px rgba(56,242,198,.6);
+}
+
+/* ============ B · 高对比 + 发光数字 + 刻度直立 ============ */
+.clock-b{
+  position:relative;width:280px;height:280px;border-radius:50%;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(56,242,198,.10) 0%, transparent 55%),
+    radial-gradient(circle at 50% 50%, #0F151B 0%, #050809 70%);
+  border:1px solid rgba(56,242,198,.35);
+  box-shadow:
+    inset 0 0 50px rgba(56,242,198,.12),
+    0 0 24px rgba(56,242,198,.18),
+    0 0 60px rgba(56,242,198,.08);
+  margin:0 auto;
+}
+.clock-b .ticks{position:absolute;inset:0;border-radius:50%;}
+.clock-b .ticks span{
+  position:absolute;left:50%;top:6px;width:2px;height:8px;
+  background:rgba(168,255,232,.25);transform-origin:50% 134px;border-radius:999px;
+}
+.clock-b .ticks span.major{height:14px;background:rgba(56,242,198,.75);box-shadow:0 0 6px rgba(56,242,198,.6);}
+/* 刻度数字：每个数字独立定位 + counter-rotate 保持直立 */
+.clock-b .num{
+  position:absolute;left:50%;top:30px;
+  transform:translate(-50%,0);
+  font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;
+  color:#38F2C6;text-shadow:0 0 6px rgba(56,242,198,.6);
+}
+.clock-b .center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;}
+.clock-b .center .t{
+  font-family:"JetBrains Mono",monospace;font-size:34px;font-weight:700;
+  color:#E6EDF3;letter-spacing:-.02em;
+  text-shadow:0 0 16px rgba(56,242,198,.45),0 0 32px rgba(56,242,198,.22);
+}
+.clock-b .center .ms{
+  font-size:15px;font-weight:500;color:#38F2C6;margin-left:4px;
+  text-shadow:0 0 8px rgba(56,242,198,.6);
+}
+.clock-b .cap{font-size:9px;letter-spacing:.3em;color:#38F2C6;margin-top:6px;opacity:.8;}
+.clock-b .h-sec{
+  position:absolute;left:50%;top:50%;width:2px;height:118px;
+  background:linear-gradient(to top,transparent 0%,#38F2C6 25%,#A8FFE8 100%);
+  transform-origin:50% 0;transform:translate(-50%,0) rotate(240deg);
+  box-shadow:0 0 10px rgba(56,242,198,.85),0 0 20px rgba(56,242,198,.4);
+  border-radius:999px;
+}
+.clock-b .h-sec::after{
+  content:"";position:absolute;left:50%;top:-4px;transform:translateX(-50%);
+  width:6px;height:6px;border-radius:50%;background:#A8FFE8;
+  box-shadow:0 0 10px #38F2C6,0 0 20px #38F2C6;
+}
+.clock-b .h-min{
+  position:absolute;left:50%;top:50%;width:3px;height:78px;
+  background:linear-gradient(to top,transparent 0%,#A8FFE8 20%,#E6EDF3 100%);
+  transform-origin:50% 0;transform:translate(-50%,0) rotate(120deg);
+  box-shadow:0 0 8px rgba(168,255,232,.55);border-radius:999px;
+}
+.clock-b .hub{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:12px;height:12px;border-radius:50%;background:#A8FFE8;
+  box-shadow:0 0 14px #38F2C6,0 0 30px rgba(56,242,198,.7),0 0 50px rgba(56,242,198,.3);
+}
+.clock-b .hub::after{
+  content:"";position:absolute;inset:3px;border-radius:50%;background:#04140F;
+}
+
+/* ============ C · 双环 + 分段刻度 + 更亮 ============ */
+.clock-c{
+  position:relative;width:280px;height:280px;border-radius:50%;
+  background:
+    conic-gradient(from 0deg, rgba(56,242,198,.12), rgba(56,242,198,0) 25%, rgba(56,242,198,.12) 50%, rgba(56,242,198,0) 75%, rgba(56,242,198,.12)),
+    radial-gradient(circle at 50% 50%, #0F151B 0%, #050809 70%);
+  border:2px solid rgba(56,242,198,.4);
+  box-shadow:
+    inset 0 0 60px rgba(56,242,198,.15),
+    0 0 30px rgba(56,242,198,.25);
+  margin:0 auto;
+}
+.clock-c .ticks{position:absolute;inset:6px;border-radius:50%;}
+.clock-c .ticks span{
+  position:absolute;left:50%;top:0;width:2px;height:6px;
+  background:rgba(168,255,232,.3);transform-origin:50% 134px;border-radius:999px;
+}
+.clock-c .ticks span.major{height:12px;background:#38F2C6;box-shadow:0 0 8px rgba(56,242,198,.7);width:3px;}
+.clock-c .num{
+  position:absolute;left:50%;top:22px;
+  font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:700;
+  color:#A8FFE8;text-shadow:0 0 6px rgba(56,242,198,.7);
+}
+.clock-c .center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;}
+.clock-c .center .t{
+  font-family:"JetBrains Mono",monospace;font-size:36px;font-weight:800;
+  color:#FFFFFF;letter-spacing:-.02em;
+  text-shadow:0 0 18px rgba(56,242,198,.55),0 0 36px rgba(56,242,198,.28);
+}
+.clock-c .center .ms{
+  font-size:16px;font-weight:600;color:#A8FFE8;margin-left:4px;
+  text-shadow:0 0 10px rgba(168,255,232,.7);
+}
+.clock-c .cap{font-size:9px;letter-spacing:.3em;color:#A8FFE8;margin-top:6px;}
+.clock-c .h-sec{
+  position:absolute;left:50%;top:50%;width:2px;height:120px;
+  background:linear-gradient(to top,transparent,#A8FFE8 20%,#FFFFFF);
+  transform-origin:50% 0;transform:translate(-50%,0) rotate(240deg);
+  box-shadow:0 0 12px #38F2C6,0 0 24px rgba(56,242,198,.5);
+  border-radius:999px;
+}
+.clock-c .h-min{
+  position:absolute;left:50%;top:50%;width:4px;height:80px;
+  background:linear-gradient(to top,transparent,#38F2C6 20%,#A8FFE8);
+  transform-origin:50% 0;transform:translate(-50%,0) rotate(120deg);
+  box-shadow:0 0 10px rgba(56,242,198,.6);border-radius:999px;
+}
+.clock-c .hub{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:14px;height:14px;border-radius:50%;background:#A8FFE8;
+  box-shadow:0 0 16px #38F2C6,0 0 36px rgba(56,242,198,.8);
+  border:2px solid #04140F;
+}
+
+/* ============ D · B 基础 + 倒计时进度环 ============ */
+.clock-d{
+  position:relative;width:280px;height:280px;border-radius:50%;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(56,242,198,.10) 0%, transparent 55%),
+    radial-gradient(circle at 50% 50%, #0F151B 0%, #050809 70%);
+  border:1px solid rgba(56,242,198,.35);
+  box-shadow:
+    inset 0 0 50px rgba(56,242,198,.12),
+    0 0 24px rgba(56,242,198,.18);
+  margin:0 auto;
+}
+/* 外层进度环（倒计时剩余） */
+.clock-d .ring{position:absolute;inset:-10px;transform:rotate(-90deg);}
+.clock-d .ring circle{fill:none;stroke-linecap:round;}
+.clock-d .ring .bg{stroke:rgba(56,242,198,.12);stroke-width:2;}
+.clock-d .ring .fg{
+  stroke:#38F2C6;stroke-width:3;
+  stroke-dasharray:879;stroke-dashoffset:264; /* 70% */
+  filter:drop-shadow(0 0 6px rgba(56,242,198,.8));
+}
+.clock-d .ticks{position:absolute;inset:0;border-radius:50%;}
+.clock-d .ticks span{
+  position:absolute;left:50%;top:6px;width:2px;height:8px;
+  background:rgba(168,255,232,.25);transform-origin:50% 134px;border-radius:999px;
+}
+.clock-d .ticks span.major{height:14px;background:rgba(56,242,198,.75);box-shadow:0 0 6px rgba(56,242,198,.6);}
+.clock-d .num{
+  position:absolute;left:50%;top:30px;transform:translate(-50%,0);
+  font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;
+  color:#38F2C6;text-shadow:0 0 6px rgba(56,242,198,.6);
+}
+.clock-d .center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;}
+.clock-d .center .t{
+  font-family:"JetBrains Mono",monospace;font-size:34px;font-weight:700;
+  color:#E6EDF3;letter-spacing:-.02em;
+  text-shadow:0 0 16px rgba(56,242,198,.45),0 0 32px rgba(56,242,198,.22);
+}
+.clock-d .center .ms{
+  font-size:15px;font-weight:500;color:#38F2C6;margin-left:4px;
+  text-shadow:0 0 8px rgba(56,242,198,.6);
+}
+.clock-d .cap{font-size:9px;letter-spacing:.3em;color:#38F2C6;margin-top:6px;opacity:.8;}
+.clock-d .h-sec{
+  position:absolute;left:50%;top:50%;width:2px;height:118px;
+  background:linear-gradient(to top,transparent,#38F2C6 25%,#A8FFE8);
+  transform-origin:50% 0;transform:translate(-50%,0) rotate(240deg);
+  box-shadow:0 0 10px rgba(56,242,198,.85),0 0 20px rgba(56,242,198,.4);
+  border-radius:999px;
+}
+.clock-d .h-min{
+  position:absolute;left:50%;top:50%;width:3px;height:78px;
+  background:linear-gradient(to top,transparent,#A8FFE8 20%,#E6EDF3);
+  transform-origin:50% 0;transform:translate(-50%,0) rotate(120deg);
+  box-shadow:0 0 8px rgba(168,255,232,.55);border-radius:999px;
+}
+.clock-d .hub{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:12px;height:12px;border-radius:50%;background:#A8FFE8;
+  box-shadow:0 0 14px #38F2C6,0 0 30px rgba(56,242,198,.7);
+}
+
+.issue-list{font-size:11px;color:#F87171;line-height:1.8;}
+.fix-list{font-size:11px;color:#34D399;line-height:1.8;}
+</style>
+</head>
+<body class="min-h-screen">
+<div class="max-w-2xl mx-auto px-5 py-10 flex flex-col gap-10">
+
+  <div>
+    <div class="label mb-2">预览 · COUNTDOWN CLOCK REFINEMENT</div>
+    <h1 class="section-title text-2xl">倒计时时钟 · 改进方案</h1>
+    <p class="label-sub mt-2">修复：色彩暗 / 字体暗 / 刻度数字倒放。对比当前 vs B/C/D 改进。仅预览，未改代码。</p>
+  </div>
+
+  <!-- A 当前问题版 -->
+  <div class="card gap-box">
+    <div class="flex items-center justify-between mb-4">
+      <span class="label">A · 当前（问题版）</span>
+    </div>
+    <div class="clock-a">
+      <div class="ticks" id="ticks-a"></div>
+      <div class="center">
+        <div><span class="t">00:09</span><span class="ms">.245</span></div>
+        <div class="cap">COUNTDOWN</div>
+      </div>
+      <div class="h-min"></div>
+      <div class="h-sec"></div>
+      <div class="hub"></div>
+    </div>
+    <div class="issue-list mt-5">
+      ✕ 刻度数字用 attr+::after 生成，未反向旋转 → 下半圈数字倒放<br>
+      ✕ 数字色 rgba(139,151,165,.7) 太暗，几乎看不清<br>
+      ✕ 中心数字色 #E6EDF3 在暗背景上不够亮，无辉光<br>
+      ✕ 表盘整体辉光弱（box-shadow 透明度 0.08-0.12）<br>
+      ✕ 秒针无端点高亮，视觉重量轻
+    </div>
+  </div>
+
+  <!-- B 高对比 -->
+  <div class="card gap-box">
+    <div class="flex items-center justify-between mb-4">
+      <span class="label">B · 高对比 + 发光数字 + 刻度直立（推荐）</span>
+      <span class="label-sub">修复全部 3 个问题</span>
+    </div>
+    <div class="clock-b">
+      <div class="ticks" id="ticks-b"></div>
+      <div class="center">
+        <div><span class="t">00:09</span><span class="ms">.245</span></div>
+        <div class="cap">COUNTDOWN</div>
+      </div>
+      <div class="h-min"></div>
+      <div class="h-sec"></div>
+      <div class="hub"></div>
+    </div>
+    <div class="fix-list mt-5">
+      ✓ 刻度数字独立定位 + counter-rotate 保持所有数字直立<br>
+      ✓ 数字色 #38F2C6 主色 + text-shadow 发光，清晰可读<br>
+      ✓ 中心主数字白 #E6EDF3 + 双层辉光，ms 用主色亮青<br>
+      ✓ 表盘三层辉光（inset + 外层柔光 + 远光）<br>
+      ✓ 秒针端点加 6px 圆点 + 双层发光，头部高亮
+    </div>
+  </div>
+
+  <!-- C 双环极亮 -->
+  <div class="card gap-box">
+    <div class="flex items-center justify-between mb-4">
+      <span class="label">C · 双环 + 分段刻度 + 全亮（科技最强）</span>
+      <span class="label-sub">最炫但最「重」</span>
+    </div>
+    <div class="clock-c">
+      <div class="ticks" id="ticks-c"></div>
+      <div class="center">
+        <div><span class="t">00:09</span><span class="ms">.245</span></div>
+        <div class="cap">COUNTDOWN</div>
+      </div>
+      <div class="h-min"></div>
+      <div class="h-sec"></div>
+      <div class="hub"></div>
+    </div>
+    <div class="label-sub mt-5">conic-gradient 旋转辉光 + 粗边框 + 主色刻度 + 纯白数字 + 强发光秒针。视觉重量最重，适合倒计时紧迫感。</div>
+  </div>
+
+  <!-- D B+进度环 -->
+  <div class="card gap-box">
+    <div class="flex items-center justify-between mb-4">
+      <span class="label">D · B 基础 + 倒计时进度环</span>
+      <span class="label-sub">信息量最大</span>
+    </div>
+    <div class="clock-d">
+      <svg class="ring" width="300" height="300" viewBox="0 0 300 300">
+        <circle class="bg" cx="150" cy="150" r="140"/>
+        <circle class="fg" cx="150" cy="150" r="140"/>
+      </svg>
+      <div class="ticks" id="ticks-d"></div>
+      <div class="center">
+        <div><span class="t">00:09</span><span class="ms">.245</span></div>
+        <div class="cap">COUNTDOWN</div>
+      </div>
+      <div class="h-min"></div>
+      <div class="h-sec"></div>
+      <div class="hub"></div>
+    </div>
+    <div class="label-sub mt-5">在 B 基础上加外层进度环（剩余比例），指针 + 进度环双重表达，倒计时场景最贴切。</div>
+  </div>
+
+</div>
+<script>
+function buildTicksA(id){
+  var el=document.getElementById(id);if(!el)return;
+  for(var i=0;i<60;i++){
+    var s=document.createElement('span');
+    if(i%5===0){s.className='major major-num';s.setAttribute('data-n',i===0?'60':String(i));}
+    s.style.transform='translateX(-50%) rotate('+(i*6)+'deg)';
+    el.appendChild(s);
+  }
+}
+function buildTicksBCD(id, variant){
+  var el=document.getElementById(id);if(!el)return;
+  var r=134;
+  for(var i=0;i<60;i++){
+    var s=document.createElement('span');
+    var angle=i*6;
+    s.style.transform='translateX(-50%) rotate('+angle+'deg)';
+    s.style.transformOrigin='50% '+r+'px';
+    if(i%5===0){
+      s.className='major';
+      // 独立数字元素，反向旋转保持直立
+      var n=document.createElement('span');
+      n.className='num';
+      n.textContent = i===0 ? '60' : String(i);
+      // 数字定位：沿圆周 30px 处
+      var rad = (angle-90) * Math.PI/180;
+      var nx = 140 + Math.cos(rad) * 110 - 6; // 中心 140, 半径 110
+      var ny = 140 + Math.sin(rad) * 110 - 8;
+      n.style.left = nx + 'px';
+      n.style.top = ny + 'px';
+      n.style.transform = 'translate(-50%,0)';
+      el.appendChild(n);
+    }
+    el.appendChild(s);
+  }
+}
+buildTicksA('ticks-a');
+buildTicksBCD('ticks-b');
+buildTicksBCD('ticks-c');
+buildTicksBCD('ticks-d');
+</script>
+</body>
+</html>
