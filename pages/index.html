@@ -235,10 +235,17 @@ var _hmt = _hmt || [];
         </div>
       </section>
 
-      <!-- Progress bar (thick · gradient · glow · shimmer) -->
-      <section class="progress" aria-label="进度">
-        <div class="progress__track relative h-2 w-full rounded-full bg-border overflow-hidden">
-          <div class="progress__fill absolute left-0 top-0 h-full rounded-full" style="width:12%"></div>
+      <!-- Analog clock (秒针 + 分针 + 60 刻度) -->
+      <section class="clock-wrap" aria-label="模拟时钟">
+        <div class="clock" id="analog-clock">
+          <div class="clock__ticks" id="clock-ticks"></div>
+          <div class="clock__center">
+            <div><span class="display__main" id="clock-main">00:00</span><span class="display__ms" id="clock-ms">.000</span></div>
+            <div class="clock__cap">STOPWATCH</div>
+          </div>
+          <div class="clock__hand-min" id="hand-min"></div>
+          <div class="clock__hand-sec" id="hand-sec"></div>
+          <div class="clock__hub"></div>
         </div>
       </section>
 
@@ -357,25 +364,64 @@ var _hmt = _hmt || [];
           margin-left: 0.05em;
         }
 
-        .progress__track { margin-top: 2px; }
-        /* 进度条：粗条 · 渐变 · 发光 · 流光（方案 B） */
-        .progress__fill {
-          background: linear-gradient(90deg, #0E7C5A 0%, #38F2C6 55%, #A8FFE8 100%);
-          box-shadow: 0 0 12px rgba(56, 242, 198, .55), 0 0 28px rgba(56, 242, 198, .25);
-          transition: width .12s linear;
+        /* 模拟时钟 · 分针 + 秒针 + 60 刻度 */
+        .clock-wrap { display:flex; justify-content:center; }
+        .clock {
+          position:relative;
+          width:280px;height:280px;border-radius:50%;
+          background:radial-gradient(circle at 50% 50%, #0F151B 0%, #070B0F 70%);
+          border:1px solid rgba(56,242,198,.18);
+          box-shadow:inset 0 0 40px rgba(56,242,198,.08), 0 0 30px rgba(56,242,198,.12);
         }
-        .progress__fill::after {
-          content: "";
-          position: absolute;
-          inset: 0;
-          border-radius: 999px;
-          background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, .45) 50%, transparent 100%);
-          background-size: 200% 100%;
-          animation: tm-shimmer 2.2s linear infinite;
+        .clock__ticks { position:absolute;inset:0;border-radius:50%; }
+        .clock__ticks span {
+          position:absolute;left:50%;top:0;
+          width:2px;height:8px;background:rgba(139,151,165,.35);
+          transform-origin:50% 140px;
         }
-        @keyframes tm-shimmer {
-          0% { background-position: 200% 0; }
-          100% { background-position: -200% 0; }
+        .clock__ticks span.major { height:14px;background:rgba(56,242,198,.6); }
+        .clock__ticks span.major-num::after {
+          content:attr(data-n);position:absolute;left:50%;top:18px;transform:translateX(-50%);
+          font-size:11px;color:rgba(139,151,165,.7);font-family:var(--tm-font-mono);
+        }
+        .clock__center {
+          position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+          text-align:center;
+        }
+        .clock__center .display__main,
+        .clock__center .display__ms { font-family:var(--tm-font-mono);font-size:30px;font-weight:600;letter-spacing:-.02em; }
+        .clock__center .display__ms { font-size:14px;color:var(--tm-muted-foreground);margin-left:4px; }
+        .clock__cap { font-size:9px;letter-spacing:.3em;color:var(--tm-muted-foreground);margin-top:6px; }
+        .clock__hand-sec {
+          position:absolute;left:50%;top:50%;
+          width:2px;height:110px;
+          background:linear-gradient(to top, transparent 0%, #38F2C6 30%, #A8FFE8 100%);
+          transform-origin:50% 0;
+          transform:translate(-50%,0) rotate(0deg);
+          box-shadow:0 0 8px rgba(56,242,198,.7);
+          border-radius:999px;
+          transition:transform .08s cubic-bezier(.4,2.5,.6,1);
+        }
+        .clock__hand-min {
+          position:absolute;left:50%;top:50%;
+          width:3px;height:75px;
+          background:linear-gradient(to top, transparent 0%, #A8FFE8 20%, #E6EDF3 100%);
+          transform-origin:50% 0;
+          transform:translate(-50%,0) rotate(0deg);
+          box-shadow:0 0 6px rgba(168,255,232,.4);
+          border-radius:999px;
+          transition:transform .2s ease-out;
+        }
+        .clock__hub {
+          position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+          width:10px;height:10px;border-radius:50%;
+          background:#A8FFE8;box-shadow:0 0 12px #38F2C6,0 0 24px rgba(56,242,198,.6);
+        }
+        @media (max-width: 380px) {
+          .clock { width:240px;height:240px; }
+          .clock__ticks span { transform-origin:50% 120px; }
+          .clock__hand-sec { height:92px; }
+          .clock__hand-min { height:62px; }
         }
 
         .laps-card { width: 100%; }

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>秒表显示方案预览</title>
+<script src="https://unpkg.com/@tailwindcss/browser@4/dist/index.global.js"></script>
+<style>
+:root{
+  --tm-primary:#38F2C6; --tm-background:#070B0F; --tm-foreground:#E6EDF3;
+  --tm-card:#0F151B; --tm-border:#1F2A35; --tm-muted-foreground:#8B97A5;
+}
+body{background:var(--tm-background);color:var(--tm-foreground);font-family:"Inter","PingFang SC",system-ui,sans-serif;}
+.font-mono{font-family:"JetBrains Mono","Cascadia Code",monospace;}
+.label{font-size:11px;letter-spacing:.25em;color:var(--tm-muted-foreground);}
+.label-sub{font-size:11px;color:var(--tm-muted-foreground);}
+.section-title{font-size:13px;font-weight:600;}
+.card{background:rgba(15,21,27,.7);border:1px solid var(--tm-border);border-radius:14px;padding:24px;}
+.gap-box{margin-bottom:32px;}
+
+.digits{font-size:clamp(48px,9vw,120px);line-height:1;letter-spacing:-.02em;}
+.digits .ms{font-size:.42em;color:var(--tm-muted-foreground);}
+
+/* A · 当前：进度条 */
+.bar-thick{height:8px;border-radius:999px;background:var(--tm-border);position:relative;overflow:hidden;}
+.bar-thick > i{position:absolute;left:0;top:0;height:100%;border-radius:999px;width:62%;
+  background:linear-gradient(90deg,#0E7C5A 0%,#38F2C6 55%,#A8FFE8 100%);
+  box-shadow:0 0 12px rgba(56,242,198,.55),0 0 28px rgba(56,242,198,.25);}
+
+/* B · 模拟时钟：60 秒刻度 + 秒针 + 分针 */
+.clock{
+  position:relative;
+  width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle at 50% 50%, #0F151B 0%, #070B0F 70%);
+  border:1px solid rgba(56,242,198,.18);
+  box-shadow:inset 0 0 40px rgba(56,242,198,.08), 0 0 30px rgba(56,242,198,.12);
+  margin:0 auto;
+}
+/* 外圈刻度环 */
+.clock__ticks{position:absolute;inset:0;border-radius:50%;}
+.clock__ticks span{
+  position:absolute;left:50%;top:0;
+  width:2px;height:8px;background:rgba(139,151,165,.35);
+  transform-origin:50% 140px;
+}
+.clock__ticks span.major{height:14px;background:rgba(56,242,198,.6);width:2px;}
+.clock__ticks span.major-num::after{
+  content:attr(data-n);position:absolute;left:50%;top:18px;transform:translateX(-50%);
+  font-size:11px;color:rgba(139,151,165,.7);font-family:"JetBrains Mono",monospace;
+}
+/* 中心数字 */
+.clock__center{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  text-align:center;
+}
+.clock__center .t{font-family:"JetBrains Mono",monospace;font-size:30px;font-weight:600;color:var(--tm-foreground);letter-spacing:-.02em;}
+.clock__center .ms{font-size:14px;color:var(--tm-muted-foreground);margin-left:4px;}
+.clock__center .cap{font-size:9px;letter-spacing:.3em;color:var(--tm-muted-foreground);margin-top:6px;}
+/* 秒针（细长，主色，发光） */
+.clock__hand-sec{
+  position:absolute;left:50%;top:50%;
+  width:2px;height:110px;
+  background:linear-gradient(to top, transparent 0%, #38F2C6 30%, #A8FFE8 100%);
+  transform-origin:50% 0;
+  transform:translate(-50%,0) rotate(0deg);
+  box-shadow:0 0 8px rgba(56,242,198,.7);
+  border-radius:999px;
+}
+/* 分针（粗短，浅亮，发光弱） */
+.clock__hand-min{
+  position:absolute;left:50%;top:50%;
+  width:3px;height:75px;
+  background:linear-gradient(to top, transparent 0%, #A8FFE8 20%, #E6EDF3 100%);
+  transform-origin:50% 0;
+  transform:translate(-50%,0) rotate(180deg);
+  box-shadow:0 0 6px rgba(168,255,232,.4);
+  border-radius:999px;
+}
+/* 中心轴 */
+.clock__hub{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:10px;height:10px;border-radius:50%;
+  background:#A8FFE8;box-shadow:0 0 12px #38F2C6,0 0 24px rgba(56,242,198,.6);
+}
+/* 运行态：秒针每秒跳 */
+@keyframes tick-sec{from{transform:translate(-50%,0) rotate(0deg)}to{transform:translate(-50%,0) rotate(360deg)}}
+@keyframes tick-min{from{transform:translate(-50%,0) rotate(0deg)}to{transform:translate(-50%,0) rotate(360deg)}}
+.clock.running .clock__hand-sec{animation:tick-sec 60s steps(60,end) infinite;}
+.clock.running .clock__hand-min{animation:tick-min 3600s linear infinite;}
+
+/* C · 圆环进度（秒表 60 秒一圈，更克制） */
+.ring{position:relative;width:280px;height:280px;margin:0 auto;}
+.ring svg{transform:rotate(-90deg);}
+.ring__bg{fill:none;stroke:var(--tm-border);stroke-width:6;}
+.ring__fill{fill:none;stroke:url(#ringGrad);stroke-width:6;stroke-linecap:round;
+  stroke-dasharray:820;stroke-dashoffset:312;
+  filter:drop-shadow(0 0 8px rgba(56,242,198,.6));}
+.ring__center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;}
+.ring__center .t{font-family:"JetBrains Mono",monospace;font-size:34px;font-weight:600;color:var(--tm-foreground);}
+.ring__center .ms{font-size:15px;color:var(--tm-muted-foreground);margin-left:4px;}
+.ring__center .cap{font-size:9px;letter-spacing:.3em;color:var(--tm-muted-foreground);margin-top:6px;}
+
+.legend{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:10px;}
+.legend span{font-size:10px;color:var(--tm-muted-foreground);display:inline-flex;align-items:center;gap:6px;}
+.legend i{width:10px;height:2px;display:inline-block;border-radius:999px;}
+</style>
+</head>
+<body class="min-h-screen">
+<div class="max-w-2xl mx-auto px-5 py-10 flex flex-col gap-10">
+
+  <div>
+    <div class="label mb-2">预览 · STOPWATCH DISPLAY STUDY</div>
+    <h1 class="section-title text-2xl">秒表显示方案</h1>
+    <p class="label-sub mt-2">对比当前进度条 vs 模拟时钟 vs 圆环。仅效果预览，未改动项目代码。</p>
+  </div>
+
+  <!-- A 当前 -->
+  <div class="card gap-box">
+    <div class="flex items-center justify-between mb-4">
+      <span class="label">A · 当前 进度条</span>
+      <span class="label-sub">问题：秒表是累计计时，进度条按 60s 循环，语义不贴切</span>
+    </div>
+    <div class="digits font-mono tabular-nums mb-5">00:42<span class="ms">.315</span></div>
+    <div class="bar-thick"><i></i></div>
+    <p class="label-sub mt-3">每 60 秒重置一次，看不出「累计了多久」</p>
+  </div>
+
+  <!-- B 模拟时钟 -->
+  <div class="card gap-box">
+    <div class="flex items-center justify-between mb-5">
+      <span class="label">B · 模拟时钟（分针 + 秒针）</span>
+      <span class="label-sub">推荐 · 语义贴切</span>
+    </div>
+    <div class="clock running">
+      <div class="clock__ticks" id="ticks"></div>
+      <div class="clock__center">
+        <div><span class="t">00:42</span><span class="ms">.315</span></div>
+        <div class="cap">STOPWATCH</div>
+      </div>
+      <div class="clock__hand-min"></div>
+      <div class="clock__hand-sec"></div>
+      <div class="clock__hub"></div>
+    </div>
+    <div class="legend">
+      <span><i style="background:#38F2C6"></i>秒针（主色发光）</span>
+      <span><i style="background:#E6EDF3"></i>分针（浅亮）</span>
+      <span><i style="background:rgba(139,151,165,.35)"></i>60 刻度</span>
+    </div>
+    <p class="label-sub mt-4 text-center">分针走一圈 = 60 分钟；秒针走一圈 = 60 秒。一眼看出累计时长，不与「进度」混淆。</p>
+  </div>
+
+  <!-- C 圆环 -->
+  <div class="card gap-box">
+    <div class="flex items-center justify-between mb-5">
+      <span class="label">C · 圆环（60 秒一圈，克制）</span>
+      <span class="label-sub">折中方案</span>
+    </div>
+    <div class="ring">
+      <svg width="280" height="280" viewBox="0 0 280 280">
+        <defs>
+          <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#0E7C5A"/>
+            <stop offset="55%" stop-color="#38F2C6"/>
+            <stop offset="100%" stop-color="#A8FFE8"/>
+          </linearGradient>
+        </defs>
+        <circle class="ring__bg" cx="140" cy="140" r="130"/>
+        <circle class="ring__fill" cx="140" cy="140" r="130"/>
+      </svg>
+      <div class="ring__center">
+        <div><span class="t">00:42</span><span class="ms">.315</span></div>
+        <div class="cap">STOPWATCH</div>
+      </div>
+    </div>
+    <p class="label-sub mt-4 text-center">仍是 60 秒循环，但圆环语义比横条更「计时」、更克制。中间数字保留毫秒精度。</p>
+  </div>
+
+  <!-- 场景对比 -->
+  <div class="card">
+    <div class="label mb-4">场景对比 · 累计 12:34.567 时三种方案的表意</div>
+    <div class="flex flex-col gap-6">
+      <div>
+        <div class="label-sub mb-2">A 进度条（看不出来 12 分钟，只看得到 34 秒那一圈）</div>
+        <div class="bar-thick"><i style="width:57%"></i></div>
+      </div>
+      <div>
+        <div class="label-sub mb-2">B 时钟（分针指向 12，秒针指向 34，一眼读出 12 分 34 秒）</div>
+        <div class="clock" style="width:200px;height:200px;">
+          <div class="clock__ticks" id="ticks2"></div>
+          <div class="clock__center">
+            <div><span class="t" style="font-size:22px">12:34</span><span class="ms" style="font-size:11px">.567</span></div>
+            <div class="cap">STOPWATCH</div>
+          </div>
+          <div class="clock__hand-min" style="height:55px;transform:translate(-50%,0) rotate(204deg);"></div>
+          <div class="clock__hand-sec" style="height:80px;transform:translate(-50%,0) rotate(204deg);"></div>
+          <div class="clock__hub" style="width:8px;height:8px;"></div>
+        </div>
+      </div>
+      <div>
+        <div class="label-sub mb-2">C 圆环（只能表示 34/60，看不出 12 分钟）</div>
+        <div class="ring" style="width:200px;height:200px;">
+          <svg width="200" height="200" viewBox="0 0 200 200">
+            <circle class="ring__bg" cx="100" cy="100" r="92" stroke-width="5"/>
+            <circle class="ring__fill" cx="100" cy="100" r="92" stroke-width="5"
+              style="stroke-dasharray:578;stroke-dashoffset:251;"/>
+          </svg>
+          <div class="ring__center">
+            <div><span class="t" style="font-size:24px">12:34</span><span class="ms" style="font-size:11px">.567</span></div>
+            <div class="cap">STOPWATCH</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+function buildTicks(id, r){
+  var el=document.getElementById(id);if(!el)return;
+  for(var i=0;i<60;i++){
+    var s=document.createElement('span');
+    if(i%5===0){s.className='major';s.setAttribute('data-n', i===0?'60':String(i));s.classList.add('major-num');}
+    s.style.transform='translateX(-50%) rotate('+(i*6)+'deg)';
+    el.appendChild(s);
+  }
+}
+buildTicks('ticks',140);
+buildTicks('ticks2',100);
+</script>
+</body>
+</html>

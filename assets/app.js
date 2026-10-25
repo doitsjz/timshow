@@ -256,6 +256,25 @@
     var lapsList = $('.laps-list');
     var lapCount = $('.laps-card .font-mono.text-\\[11px\\]');
 
+    // 模拟时钟指针
+    var handSec = $('#hand-sec');
+    var handMin = $('#hand-min');
+    var clockTicks = $('#clock-ticks');
+    var clockMain = $('#clock-main');
+    var clockMs = $('#clock-ms');
+    // 生成 60 刻度（每 5 个为主刻度带数字）
+    if (clockTicks && !clockTicks.children.length) {
+      for (var i = 0; i < 60; i++) {
+        var s = document.createElement('span');
+        if (i % 5 === 0) {
+          s.className = 'major major-num';
+          s.setAttribute('data-n', i === 0 ? '60' : String(i));
+        }
+        s.style.transform = 'translateX(-50%) rotate(' + (i * 6) + 'deg)';
+        clockTicks.appendChild(s);
+      }
+    }
+
     var btnStart = $('[data-dom-id="btn-start"]');
     var btnLap = $('[data-dom-id="btn-lap"]');
     var btnReset = $('[data-dom-id="btn-reset"]');
@@ -264,9 +283,22 @@
       var f = formatElapsed(elapsed);
       if (mainEl) mainEl.textContent = f.main;
       if (msEl) msEl.textContent = f.ms;
-      // 进度条：每 60 秒一轮
-      var pct = (elapsed % 60000) / 60000 * 100;
-      if (progressFill) progressFill.style.width = pct + '%';
+      // 时钟中心数字同步
+      if (clockMain) clockMain.textContent = f.main;
+      if (clockMs) clockMs.textContent = f.ms;
+      // 模拟时钟：秒针 = 秒数 * 6°，分针 = 分钟数 * 6° + 秒数 * 0.1°
+      if (handSec || handMin) {
+        var totalSec = elapsed / 1000;
+        var sec = totalSec % 60;
+        var min = Math.floor(totalSec / 60) % 60;
+        if (handSec) handSec.style.transform = 'translate(-50%,0) rotate(' + (sec * 6) + 'deg)';
+        if (handMin) handMin.style.transform = 'translate(-50%,0) rotate(' + (min * 6 + sec * 0.1) + 'deg)';
+      }
+      // 兼容：若仍存在进度条（旧页面），按 60 秒循环
+      if (progressFill) {
+        var pct = (elapsed % 60000) / 60000 * 100;
+        progressFill.style.width = pct + '%';
+      }
     };
 
     function renderLaps() {
