@@ -212,16 +212,16 @@ var _hmt = _hmt || [];
 
     <main class="content-wrap max-w-2xl mx-auto px-5 py-10 flex flex-col gap-8">
 
-      <!-- Tabs (倒计时 active) -->
+      <!-- Tabs (B: 大字 + 主色填充 + 发光；倒计时在左，秒表在右) -->
       <nav class="tabs" aria-label="计时模式">
-        <div class="tabs__pill inline-flex items-center gap-1 bg-muted/60 rounded-full p-1">
-          <button data-dom-id="tab-stopwatch" class="tab inline-flex items-center gap-1.5 px-5 py-1.5 rounded-full text-[13px] text-muted-foreground">
-            <i data-lucide="timer" class="w-3.5 h-3.5"></i>
-            <span>秒表</span>
-          </button>
-          <button data-dom-id="tab-countdown" class="tab tab--active inline-flex items-center gap-1.5 px-5 py-1.5 rounded-full text-[13px] font-medium text-foreground bg-card border border-border">
-            <i data-lucide="hourglass" class="w-3.5 h-3.5"></i>
+        <div class="tabs__pill inline-flex items-center gap-1.5 bg-muted/60 border border-border rounded-full p-1.5">
+          <button data-dom-id="tab-countdown" class="tab tab--active inline-flex items-center gap-2 px-7 py-2.5 rounded-full text-[18px] font-semibold tracking-[0.04em] text-primary-foreground" style="background:linear-gradient(135deg,#38F2C6 0%,#A8FFE8 100%);box-shadow:0 0 18px rgba(56,242,198,.55),0 0 40px rgba(56,242,198,.25);">
+            <i data-lucide="hourglass" class="w-[18px] h-[18px]"></i>
             <span>倒计时</span>
+          </button>
+          <button data-dom-id="tab-stopwatch" class="tab inline-flex items-center gap-2 px-7 py-2.5 rounded-full text-[18px] font-semibold tracking-[0.04em] text-muted-foreground">
+            <i data-lucide="timer" class="w-[18px] h-[18px]"></i>
+            <span>秒表</span>
           </button>
         </div>
         <span class="tabs__indicator" aria-hidden="true"></span>

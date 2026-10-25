@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>顶部 Tab 样式预览</title>
+<script src="https://unpkg.com/@tailwindcss/browser@4/dist/index.global.js"></script>
+<script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js?v=2"></script>
+<style>
+:root{
+  --tm-primary:#38F2C6; --tm-background:#070B0F; --tm-foreground:#E6EDF3;
+  --tm-card:#0F151B; --tm-border:#1F2A35; --tm-muted:#1B232C; --tm-muted-foreground:#8B97A5;
+  --tm-input:#16202A;
+}
+body{background:var(--tm-background);color:var(--tm-foreground);font-family:"Inter","PingFang SC",system-ui,sans-serif;}
+.label{font-size:11px;letter-spacing:.25em;color:var(--tm-muted-foreground);}
+.label-sub{font-size:11px;color:var(--tm-muted-foreground);}
+.section-title{font-size:13px;font-weight:600;}
+.card{background:rgba(15,21,27,.7);border:1px solid var(--tm-border);border-radius:14px;padding:24px;}
+.gap-box{margin-bottom:32px;}
+
+/* A · 当前：小字 + 灰底 */
+.tab-a-pill{display:inline-flex;gap:4px;background:rgba(27,35,44,.6);border-radius:999px;padding:4px;}
+.tab-a{display:inline-flex;align-items:center;gap:6px;padding:6px 20px;border-radius:999px;font-size:13px;color:var(--tm-muted-foreground);background:transparent;border:1px solid transparent;}
+.tab-a.is-active{font-weight:500;color:var(--tm-foreground);background:var(--tm-card);border-color:var(--tm-border);}
+
+/* B · 大字 + 主色填充 + 发光 */
+.tab-b-pill{display:inline-flex;gap:6px;background:rgba(27,35,44,.6);border:1px solid var(--tm-border);border-radius:999px;padding:5px;}
+.tab-b{display:inline-flex;align-items:center;gap:8px;padding:10px 28px;border-radius:999px;font-size:18px;font-weight:600;letter-spacing:.04em;color:var(--tm-muted-foreground);background:transparent;border:1px solid transparent;transition:all .2s;}
+.tab-b.is-active{color:#04140F;background:linear-gradient(135deg,#38F2C6 0%,#A8FFE8 100%);border-color:#38F2C6;box-shadow:0 0 18px rgba(56,242,198,.55),0 0 40px rgba(56,242,198,.25);}
+.tab-b svg{width:18px;height:18px;}
+
+/* C · 大字 + 描边发光（未激活也亮） */
+.tab-c-pill{display:inline-flex;gap:6px;background:rgba(22,32,42,.8);border:1px solid var(--tm-border);border-radius:14px;padding:5px;}
+.tab-c{display:inline-flex;align-items:center;gap:8px;padding:9px 26px;border-radius:10px;font-size:17px;font-weight:600;letter-spacing:.04em;color:rgba(56,242,198,.55);background:transparent;border:1px solid rgba(56,242,198,.15);transition:all .2s;}
+.tab-c.is-active{color:#A8FFE8;background:rgba(56,242,198,.12);border-color:rgba(56,242,198,.6);box-shadow:inset 0 0 16px rgba(56,242,198,.18),0 0 14px rgba(56,242,198,.25);text-shadow:0 0 12px rgba(56,242,198,.6);}
+.tab-c svg{width:17px;height:17px;}
+
+/* D · 胶囊分体 + 底部指示条 + 主色字 */
+.tab-d{position:relative;display:inline-flex;gap:0;border-bottom:1px solid var(--tm-border);padding:0;}
+.tab-d-item{position:relative;display:inline-flex;align-items:center;gap:8px;padding:14px 30px;font-size:18px;font-weight:600;letter-spacing:.04em;color:var(--tm-muted-foreground);background:transparent;border:none;transition:color .2s;}
+.tab-d-item.is-active{color:#38F2C6;text-shadow:0 0 14px rgba(56,242,198,.6);}
+.tab-d-item.is-active::after{content:"";position:absolute;left:14px;right:14px;bottom:-1px;height:2px;background:linear-gradient(90deg,transparent,#38F2C6,transparent);box-shadow:0 0 10px #38F2C6;}
+.tab-d-item svg{width:18px;height:18px;}
+
+.digits{font-size:clamp(48px,9vw,120px);line-height:1;letter-spacing:-.02em;}
+.digits .ms{font-size:.42em;color:var(--tm-muted-foreground);}
+</style>
+</head>
+<body class="min-h-screen">
+<div class="max-w-2xl mx-auto px-5 py-10 flex flex-col gap-10">
+
+  <div>
+    <div class="label mb-2">预览 · TAB STYLE STUDY</div>
+    <h1 class="section-title text-2xl">顶部 Tab · 更大 · 更科技</h1>
+    <p class="label-sub mt-2">对比当前小字灰底 与 候选 B/C/D 方案。仅效果预览，未改动项目代码。</p>
+  </div>
+
+  <div class="card flex flex-col gap-10">
+
+    <!-- A 当前 -->
+    <div class="gap-box">
+      <div class="label mb-3">A · 当前（13px · 灰底 · 不明显）</div>
+      <div class="tab-a-pill">
+        <button class="tab-a is-active"><i data-lucide="timer"></i><span>秒表</span></button>
+        <button class="tab-a"><i data-lucide="hourglass"></i><span>倒计时</span></button>
+      </div>
+    </div>
+
+    <!-- B -->
+    <div class="gap-box">
+      <div class="label mb-3">B · 18px 主色填充 + 发光（推荐）</div>
+      <div class="tab-b-pill">
+        <button class="tab-b"><i data-lucide="timer"></i><span>秒表</span></button>
+        <button class="tab-b is-active"><i data-lucide="hourglass"></i><span>倒计时</span></button>
+      </div>
+      <p class="label-sub mt-2">激活态：青绿渐变填充 + 双层发光，黑字反差强烈</p>
+    </div>
+
+    <!-- C -->
+    <div class="gap-box">
+      <div class="label mb-3">C · 17px 描边发光（未激活也亮）</div>
+      <div class="tab-c-pill">
+        <button class="tab-c"><i data-lucide="timer"></i><span>秒表</span></button>
+        <button class="tab-c is-active"><i data-lucide="hourglass"></i><span>倒计时</span></button>
+      </div>
+      <p class="label-sub mt-2">未激活也是青色描边，激活态内发光 + 文字辉光</p>
+    </div>
+
+    <!-- D -->
+    <div class="gap-box">
+      <div class="label mb-3">D · 18px 下划线指示条</div>
+      <div class="tab-d">
+        <button class="tab-d-item"><i data-lucide="timer"></i><span>秒表</span></button>
+        <button class="tab-d-item is-active"><i data-lucide="hourglass"></i><span>倒计时</span></button>
+      </div>
+      <p class="label-sub mt-2">分体式，激活底部发光横条，适合偏平铺式导航</p>
+    </div>
+
+  </div>
+
+  <!-- 模拟顶部场景 -->
+  <div class="card flex flex-col gap-6">
+    <div class="label">场景模拟 · 顶部栏 + 大数字</div>
+    <div class="tab-b-pill self-start">
+      <button class="tab-b is-active"><i data-lucide="hourglass"></i><span>倒计时</span></button>
+      <button class="tab-b"><i data-lucide="timer"></i><span>秒表</span></button>
+    </div>
+    <div class="digits font-mono tabular-nums" style="font-family:'JetBrains Mono',monospace">00:09<span class="ms">.245</span></div>
+    <p class="label-sub">B 方案在真实页面中的视觉重量</p>
+  </div>
+
+</div>
+<script>if(window.lucide)lucide.createIcons();</script>
+</body>
+</html>
