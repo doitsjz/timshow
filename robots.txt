@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://doitsjz.github.io/timshow/sitemap.xml
