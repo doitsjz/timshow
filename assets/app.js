@@ -253,8 +253,6 @@
     var mainEl = $('.display__main');
     var msEl = $('.display__ms');
     var progressFill = $('.progress__fill');
-    var lapsList = $('.laps-list');
-    var lapCount = $('.laps-card .font-mono.text-\\[11px\\]');
 
     // 模拟时钟指针
     var handSec = $('#hand-sec');
@@ -276,7 +274,6 @@
     }
 
     var btnStart = $('[data-dom-id="btn-start"]');
-    var btnLap = $('[data-dom-id="btn-lap"]');
     var btnReset = $('[data-dom-id="btn-reset"]');
 
     engine.onTick = function (elapsed) {
@@ -301,23 +298,6 @@
       }
     };
 
-    function renderLaps() {
-      if (!lapsList) return;
-      lapsList.innerHTML = '';
-      engine.laps.forEach(function (lap, i) {
-        var tf = formatElapsed(lap.total);
-        var df = formatElapsed(lap.diff);
-        var li = document.createElement('li');
-        li.className = 'laps-list__row flex items-center justify-between px-4 py-3' + (i > 0 ? ' border-t border-border' : '');
-        li.innerHTML =
-          '<span class="font-mono text-[13px] text-muted-foreground">#' + pad(i + 1) + '</span>' +
-          '<span class="font-mono text-[15px] text-foreground tabular-nums">' + tf.main + tf.ms + '</span>' +
-          '<span class="font-mono text-[13px] text-muted-foreground tabular-nums">+' + df.main + df.ms + '</span>';
-        lapsList.appendChild(li);
-      });
-      if (lapCount) lapCount.textContent = engine.laps.length + ' / 99';
-    }
-
     function setStartButton(running) {
       if (running) swapIcon(btnStart, 'pause', '暂停');
       else swapIcon(btnStart, 'play', '开始');
@@ -329,17 +309,12 @@
       if (engine.state === 'running') { engine.pause(); setStartButton(false); }
       else { engine.start(); setStartButton(true); }
     });
-    if (btnLap) btnLap.addEventListener('click', function () {
-      if (engine.state !== 'running') return;
-      engine.lap(); renderLaps();
-    });
     if (btnReset) btnReset.addEventListener('click', function () {
-      engine.reset(); setStartButton(false); renderLaps();
+      engine.reset(); setStartButton(false);
     });
 
     // 初始化
     engine.onTick(0);
-    renderLaps();
   }
 
   // ---------- 倒计时页面初始化 ----------
