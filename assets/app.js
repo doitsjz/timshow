@@ -260,6 +260,8 @@
     var clockTicks = $('#clock-ticks');
     var clockMain = $('#clock-main');
     var clockMs = $('#clock-ms');
+    var ringFg = $('#ring-fg');
+    var RING_CIRC = 2 * Math.PI * 140; // r=140
     // 生成 60 刻度（独立 .num 元素，counter-rotate 保持直立）
     if (clockTicks && !clockTicks.children.length) {
       for (var i = 0; i < 60; i++) {
@@ -300,6 +302,12 @@
         var min = Math.floor(totalSec / 60) % 60;
         if (handSec) handSec.style.transform = 'translate(-50%,0) rotate(' + (sec * 6) + 'deg)';
         if (handMin) handMin.style.transform = 'translate(-50%,0) rotate(' + (min * 6 + sec * 0.1) + 'deg)';
+      }
+      // 进度环：60 秒一圈循环（跟秒针同步）
+      if (ringFg) {
+        var secPct = (elapsed % 60000) / 60000;
+        ringFg.setAttribute('stroke-dasharray', RING_CIRC);
+        ringFg.setAttribute('stroke-dashoffset', String(RING_CIRC * secPct));
       }
       // 兼容：若仍存在进度条（旧页面），按 60 秒循环
       if (progressFill) {
