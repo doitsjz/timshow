@@ -351,8 +351,21 @@
     function updatePresetActive(unit, val) {
       $$('.preset').forEach(function (p) {
         var pUnit = p.getAttribute('data-unit') || 'min';
-        var pVal = parseInt(p.querySelector('.font-mono').textContent, 10);
-        var isActive = (pUnit === unit && pVal === val);
+        var isCustom = p.getAttribute('data-dom-id') === 'preset-custom';
+        var pVal;
+        if (isCustom) {
+          var ci = p.querySelector('input');
+          pVal = ci ? parseInt(ci.value, 10) : NaN;
+        } else {
+          pVal = parseInt(p.querySelector('.font-mono').textContent, 10);
+        }
+        // 自定义档：仅当当前选中值不在 15/30 时才激活
+        var isActive;
+        if (isCustom) {
+          isActive = (pUnit === unit && pVal === val && val !== 15 && val !== 30);
+        } else {
+          isActive = (pUnit === unit && pVal === val);
+        }
         p.classList.toggle('preset--active', isActive);
         p.classList.toggle('border-primary', isActive);
         p.classList.toggle('bg-primary/10', isActive);
@@ -414,14 +427,37 @@
     }
 
     // 预设按钮：按 data-unit 分流
+    var customSecondsInput = $('[data-dom-id="custom-seconds"]');
     $$('.preset').forEach(function (p) {
-      p.addEventListener('click', function () {
+      p.addEventListener('click', function (e) {
+        // 点击自定义容器内的 input 时不触发跳转，让用户输入
+        if (e.target && e.target.tagName === 'INPUT') return;
         var unit = p.getAttribute('data-unit') || 'min';
+        var isCustom = p.getAttribute('data-dom-id') === 'preset-custom';
+        if (isCustom) {
+          var csv = customSecondsInput ? customSecondsInput.value : 20;
+          setDurationSeconds(csv);
+          Settings.set('customSeconds', Math.max(1, Math.min(600, parseInt(csv, 10) || 30)));
+          if (customSecondsInput) customSecondsInput.focus();
+          return;
+        }
         var val = parseInt(p.querySelector('.font-mono').textContent, 10);
         if (unit === 'sec') setDurationSeconds(val);
         else setDuration(val);
       });
     });
+    if (customSecondsInput) {
+      customSecondsInput.addEventListener('input', function () {
+        var v = parseInt(customSecondsInput.value, 10);
+        if (!isNaN(v) && v > 0 && v <= 600) {
+          setDurationSeconds(v);
+          updatePresetActive('sec', v);
+          updateTargetLabel('sec', v);
+          Settings.set('customSeconds', v);
+        }
+      });
+      customSecondsInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') { customSecondsInput.blur(); } });
+    }
     if (customInput) {
       customInput.addEventListener('change', function () { setDuration(customInput.value); });
       customInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') { setDuration(customInput.value); customInput.blur(); } });
