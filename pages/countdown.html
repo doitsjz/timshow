@@ -236,22 +236,10 @@ var _hmt = _hmt || [];
         <span id="target-label" class="text-[11px] text-muted-foreground">目标 15 秒 · 秒级训练</span>
       </section>
 
-      <!-- Progress (countdown: full bar = just set) -->
+      <!-- Progress bar (thick · gradient · glow · shimmer) -->
       <section class="progress" aria-label="倒计时进度">
-        <div class="progress__track relative h-px w-full bg-border">
-          <div class="progress__fill absolute left-0 top-0 h-px bg-primary" style="width:100%"></div>
-          <div class="progress__ticks absolute inset-0 flex justify-between">
-            <span class="w-px h-2 -translate-y-[3px] bg-border"></span>
-            <span class="w-px h-2 -translate-y-[3px] bg-border"></span>
-            <span class="w-px h-2 -translate-y-[3px] bg-border"></span>
-            <span class="w-px h-2 -translate-y-[3px] bg-border"></span>
-            <span class="w-px h-2 -translate-y-[3px] bg-border"></span>
-            <span class="w-px h-2 -translate-y-[3px] bg-border"></span>
-            <span class="w-px h-2 -translate-y-[3px] bg-border"></span>
-            <span class="w-px h-2 -translate-y-[3px] bg-border"></span>
-            <span class="w-px h-2 -translate-y-[3px] bg-border"></span>
-            <span class="w-px h-2 -translate-y-[3px] bg-border"></span>
-          </div>
+        <div class="progress__track relative h-2 w-full rounded-full bg-border overflow-hidden">
+          <div class="progress__fill absolute left-0 top-0 h-full rounded-full" style="width:100%"></div>
         </div>
       </section>
 
@@ -377,7 +365,25 @@ var _hmt = _hmt || [];
         }
 
         .progress__track { margin-top: 2px; }
-        .progress__ticks { pointer-events: none; }
+        /* 进度条：粗条 · 渐变 · 发光 · 流光（方案 B） */
+        .progress__fill {
+          background: linear-gradient(90deg, #0E7C5A 0%, #38F2C6 55%, #A8FFE8 100%);
+          box-shadow: 0 0 12px rgba(56, 242, 198, .55), 0 0 28px rgba(56, 242, 198, .25);
+          transition: width .12s linear;
+        }
+        .progress__fill::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          border-radius: 999px;
+          background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, .45) 50%, transparent 100%);
+          background-size: 200% 100%;
+          animation: tm-shimmer 2.2s linear infinite;
+        }
+        @keyframes tm-shimmer {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
 
         .presets-card { width: 100%; }
         .preset {

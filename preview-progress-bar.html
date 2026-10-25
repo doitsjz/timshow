@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>进度条样式预览</title>
+<script src="https://unpkg.com/@tailwindcss/browser@4/dist/index.global.js"></script>
+<style>
+:root{
+  --tm-primary:#38F2C6; --tm-background:#070B0F; --tm-foreground:#E6EDF3;
+  --tm-card:#0F151B; --tm-border:#1F2A35; --tm-muted-foreground:#8B97A5;
+}
+body{background:var(--tm-background);color:var(--tm-foreground);font-family:"Inter","PingFang SC",system-ui,sans-serif;}
+.font-mono{font-family:"JetBrains Mono","Cascadia Code",monospace;}
+.label{font-size:11px;letter-spacing:.25em;color:var(--tm-muted-foreground);}
+.label-sub{font-size:10px;color:var(--tm-muted-foreground);}
+
+/* A. 当前（1px 细线） */
+.bar-current{height:1px;background:var(--tm-border);position:relative;}
+.bar-current > i{position:absolute;left:0;top:0;height:1px;background:var(--tm-primary);width:62%;}
+
+/* B. 粗条 + 渐变 + 发光 */
+.bar-thick{height:8px;border-radius:999px;background:var(--tm-border);position:relative;overflow:hidden;}
+.bar-thick > i{position:absolute;left:0;top:0;height:100%;border-radius:999px;width:62%;
+  background:linear-gradient(90deg,#0E7C5A 0%,#38F2C6 55%,#A8FFE8 100%);
+  box-shadow:0 0 12px rgba(56,242,198,.55),0 0 28px rgba(56,242,198,.25);
+}
+.bar-thick > i::after{content:"";position:absolute;inset:0;border-radius:999px;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.45) 50%,transparent 100%);
+  background-size:200% 100%;animation:shimmer 2.2s linear infinite;}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* C. 粗条 + 分段刻度 */
+.bar-segments{height:8px;border-radius:999px;background:var(--tm-border);position:relative;overflow:hidden;display:flex;gap:2px;padding:0;}
+.bar-segments > span{height:100%;flex:1;border-radius:2px;background:var(--tm-border);}
+.bar-segments > span.on{background:linear-gradient(90deg,#0E7C5A,#38F2C6);box-shadow:0 0 8px rgba(56,242,198,.5);}
+
+/* D. 双层：粗轨道 + 顶部脉冲 */
+.bar-pulse{height:10px;border-radius:999px;background:var(--tm-border);position:relative;overflow:hidden;}
+.bar-pulse > i{position:absolute;left:0;top:0;height:100%;border-radius:999px;width:62%;
+  background:linear-gradient(90deg,#0E7C5A,#38F2C6);box-shadow:0 0 16px rgba(56,242,198,.6);}
+.bar-pulse > i::before{content:"";position:absolute;right:-2px;top:50%;transform:translateY(-50%);
+  width:10px;height:18px;border-radius:999px;background:#A8FFE8;
+  box-shadow:0 0 14px #38F2C6,0 0 30px #38F2C6;animation:pulse 1.1s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:.7;transform:translateY(-50%) scale(.85)}50%{opacity:1;transform:translateY(-50%) scale(1.15)}}
+
+.card{background:rgba(15,21,27,.7);border:1px solid var(--tm-border);border-radius:14px;padding:20px;}
+.section-title{font-size:13px;font-weight:600;color:var(--tm-foreground);}
+.digits{font-size:clamp(48px,9vw,120px);line-height:1;letter-spacing:-.02em;}
+.digits .ms{font-size:.42em;color:var(--tm-muted-foreground);}
+</style>
+</head>
+<body class="min-h-screen">
+<div class="max-w-2xl mx-auto px-5 py-10 flex flex-col gap-10">
+
+  <div>
+    <div class="label mb-2">预览 · PROGRESS BAR STUDY</div>
+    <h1 class="section-title text-2xl">进度条加粗 · 更酷</h1>
+    <p class="label-sub mt-2">对比当前 1px 细线 与 候选 B/C/D 方案。仅效果预览，未改动项目代码。</p>
+  </div>
+
+  <!-- 秒表场景 -->
+  <div class="card flex flex-col gap-6">
+    <div class="flex items-center justify-between">
+      <span class="label">秒表 · STOPWATCH</span>
+      <span class="label-sub font-mono">00:42.315</span>
+    </div>
+    <div class="digits font-mono tabular-nums">00:42<span class="ms">.315</span></div>
+
+    <div>
+      <div class="label mb-2">A · 当前 1px 细线</div>
+      <div class="bar-current"><i></i></div>
+    </div>
+    <div>
+      <div class="label mb-2">B · 粗条 + 渐变 + 流光（推荐）</div>
+      <div class="bar-thick"><i></i></div>
+    </div>
+    <div>
+      <div class="label mb-2">C · 分段刻度</div>
+      <div class="bar-segments">
+        <span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span>
+        <span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+    <div>
+      <div class="label mb-2">D · 粗条 + 头部脉冲</div>
+      <div class="bar-pulse"><i></i></div>
+    </div>
+  </div>
+
+  <!-- 倒计时场景 -->
+  <div class="card flex flex-col gap-6">
+    <div class="flex items-center justify-between">
+      <span class="label">倒计时 · COUNTDOWN · 剩余 00:09.245</span>
+      <span class="label-sub font-mono">目标 30 秒</span>
+    </div>
+    <div class="digits font-mono tabular-nums">00:09<span class="ms">.245</span></div>
+
+    <div>
+      <div class="label mb-2">A · 当前 1px 细线</div>
+      <div class="bar-current"><i style="width:69%"></i></div>
+    </div>
+    <div>
+      <div class="label mb-2">B · 粗条 + 渐变 + 流光（推荐）</div>
+      <div class="bar-thick"><i style="width:69%"></i></div>
+    </div>
+    <div>
+      <div class="label mb-2">C · 分段刻度</div>
+      <div class="bar-segments">
+        <span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span>
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div>
+      <div class="label mb-2">D · 粗条 + 头部脉冲</div>
+      <div class="bar-pulse"><i style="width:69%"></i></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
