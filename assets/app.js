@@ -463,15 +463,20 @@
     if (customSecondsInput) {
       customSecondsInput.addEventListener('input', function () {
         var v = parseInt(customSecondsInput.value, 10);
-        if (!isNaN(v) && v > 0 && v <= 600) {
-          setDurationSeconds(v);
-          updatePresetActive('sec', v);
-          updateTargetLabel('sec', v);
-          Settings.set('customSeconds', v);
+        if (isNaN(v)) return;
+        // 越界立刻夹紧并回写输入框，确保显示值与引擎 targetMs 始终一致
+        if (v < 1) v = 1;
+        if (v > 600) {
+          v = 600;
+          customSecondsInput.value = 600;
         }
+        setDurationSeconds(v);
+        updatePresetActive('sec', v);
+        updateTargetLabel('sec', v);
+        Settings.set('customSeconds', v);
       });
       customSecondsInput.addEventListener('change', function () {
-        // 失焦/提交时把越界值夹紧到 1-600 并同步回输入框与引擎
+        // 失焦兜底：空值/非法值回退到 30
         var v = parseInt(customSecondsInput.value, 10);
         if (isNaN(v) || v < 1) v = 30;
         if (v > 600) v = 600;

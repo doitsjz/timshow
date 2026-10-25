@@ -281,7 +281,7 @@ var _hmt = _hmt || [];
           <!-- 自定义秒数 -->
           <div data-dom-id="preset-custom" data-unit="sec" class="preset rounded-md border border-border bg-transparent px-5 py-2.5 flex flex-col items-center gap-0.5 hover:bg-muted/50 transition-colors cursor-text">
             <div class="flex items-baseline gap-0.5">
-              <input data-dom-id="custom-seconds" type="text" inputmode="numeric" value="120" placeholder="自定义" class="w-12 bg-transparent text-center font-mono text-[18px] text-foreground placeholder:text-muted-foreground/60 focus:outline-none" aria-label="自定义秒数" />
+              <input data-dom-id="custom-seconds" type="number" min="1" max="600" step="1" value="120" placeholder="自定义" class="w-12 bg-transparent text-center font-mono text-[18px] text-foreground placeholder:text-muted-foreground/60 focus:outline-none" aria-label="自定义秒数（1-600）" />
               <span class="font-mono text-[12px] text-muted-foreground">s</span>
             </div>
             <span class="text-[10px] text-muted-foreground">自定义</span>
