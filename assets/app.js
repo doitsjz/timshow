@@ -445,9 +445,9 @@
         var unit = p.getAttribute('data-unit') || 'min';
         var isCustom = p.getAttribute('data-dom-id') === 'preset-custom';
         if (isCustom) {
-          var csv = customSecondsInput ? customSecondsInput.value : 20;
+          var csv = customSecondsInput ? customSecondsInput.value : 120;
           setDurationSeconds(csv);
-          Settings.set('customSeconds', Math.max(1, Math.min(600, parseInt(csv, 10) || 30)));
+          Settings.set('customSeconds', Math.max(1, Math.min(600, parseInt(csv, 10) || 120)));
           if (customSecondsInput) customSecondsInput.focus();
           return;
         }
@@ -482,14 +482,14 @@
     if (btnReset) btnReset.addEventListener('click', function () {
       engine.reset(); setStartButton(false);
     });
-    if (btnSound) btnSound.addEventListener('click', function () {
-      window.location.href = 'settings.html';
-    });
 
     // 初始化：按上次记忆的单位档恢复
     if (lastUnit === 'sec') {
       if (customInput) customInput.value = '';
-      if (customSecondsInput) customSecondsInput.value = lastSeconds;
+      // 仅当上次选中的是自定义值（非 15/30/60）时，才覆盖输入框；否则保留 HTML 默认 120
+      if (customSecondsInput && lastSeconds !== 15 && lastSeconds !== 30 && lastSeconds !== 60) {
+        customSecondsInput.value = lastSeconds;
+      }
       setDurationSeconds(lastSeconds);
     } else {
       if (customInput) customInput.value = duration;

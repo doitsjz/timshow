@@ -255,10 +255,14 @@ var _hmt = _hmt || [];
             <span class="font-mono text-[18px] text-foreground">30<span class="text-[12px] text-muted-foreground">s</span></span>
             <span class="text-[10px] text-muted-foreground">爆发</span>
           </button>
+          <button data-dom-id="preset-60s" data-unit="sec" type="button" class="preset rounded-md border border-border bg-transparent px-5 py-2.5 flex flex-col items-center gap-0.5 hover:bg-muted/50 transition-colors">
+            <span class="font-mono text-[18px] text-foreground">60<span class="text-[12px] text-muted-foreground">s</span></span>
+            <span class="text-[10px] text-muted-foreground">基准</span>
+          </button>
           <!-- 自定义秒数 -->
           <div data-dom-id="preset-custom" data-unit="sec" class="preset rounded-md border border-border bg-transparent px-5 py-2.5 flex flex-col items-center gap-0.5 hover:bg-muted/50 transition-colors cursor-text">
             <div class="flex items-baseline gap-0.5">
-              <input data-dom-id="custom-seconds" type="text" inputmode="numeric" value="60" placeholder="自定义" class="w-10 bg-transparent text-center font-mono text-[18px] text-foreground placeholder:text-muted-foreground/60 focus:outline-none" aria-label="自定义秒数" />
+              <input data-dom-id="custom-seconds" type="text" inputmode="numeric" value="120" placeholder="自定义" class="w-12 bg-transparent text-center font-mono text-[18px] text-foreground placeholder:text-muted-foreground/60 focus:outline-none" aria-label="自定义秒数" />
               <span class="font-mono text-[12px] text-muted-foreground">s</span>
             </div>
             <span class="text-[10px] text-muted-foreground">自定义</span>
@@ -296,12 +300,6 @@ var _hmt = _hmt || [];
         <span class="inline-flex items-center gap-1.5">
           <i data-lucide="brain" class="w-3.5 h-3.5"></i>专注番茄钟
         </span>
-      </section>
-
-      <!-- Ad slot -->
-      <section class="adslot rounded-lg border border-dashed border-border bg-card/40 p-4 flex flex-col items-center gap-1 text-center" aria-label="广告位">
-        <span class="text-muted-foreground text-[12px] tracking-[0.2em]">广告位 · Ad Slot</span>
-        <span class="text-[11px] text-muted-foreground/70">可嵌入展示型广告获取收益</span>
       </section>
 
       <!-- Footer note -->
@@ -391,7 +389,7 @@ var _hmt = _hmt || [];
         }
       </style>
     </main>
-    <script src="assets/app.js?v=17"></script>
+    <script src="assets/app.js?v=18"></script>
     <script>lucide.createIcons();</script>
 </body>
 </html>
