@@ -300,8 +300,8 @@
         var totalSec = elapsed / 1000;
         var sec = totalSec % 60;
         var min = Math.floor(totalSec / 60) % 60;
-        if (handSec) handSec.style.transform = 'translate(-50%,0) rotate(' + (sec * 6) + 'deg)';
-        if (handMin) handMin.style.transform = 'translate(-50%,0) rotate(' + (min * 6 + sec * 0.1) + 'deg)';
+        if (handSec) handSec.style.transform = 'translate(-50%,-100%) rotate(' + (sec * 6) + 'deg)';
+        if (handMin) handMin.style.transform = 'translate(-50%,-100%) rotate(' + (min * 6 + sec * 0.1) + 'deg)';
       }
       // 进度环：60 秒一圈循环（跟秒针同步）
       if (ringFg) {
