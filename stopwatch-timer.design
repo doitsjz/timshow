@@ -1,0 +1,102 @@
+{
+  "data": [
+    {
+      "id": "page-index",
+      "title": "秒表",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1766256000000,
+      "canvasData": {
+        "x": 540,
+        "y": 0,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 945,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-09499cc5",
+          "measuredAt": 1792856349193
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/index.html",
+        "interactions": [
+          {
+            "domId": "tab-countdown",
+            "targetPageId": "page-countdown",
+            "transitionLabel": "切换到倒计时"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-countdown",
+      "title": "倒计时",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1766256000000,
+      "canvasData": {
+        "x": 60,
+        "y": 0,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 982,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-be0ae0f7",
+          "measuredAt": 1792856349193
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/countdown.html",
+        "interactions": [
+          {
+            "domId": "tab-stopwatch",
+            "targetPageId": "page-index",
+            "transitionLabel": "切换到秒表"
+          },
+          {
+            "domId": "btn-sound",
+            "targetPageId": "page-settings",
+            "transitionLabel": "铃声设置"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-settings",
+      "title": "铃声设置",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1766256000000,
+      "canvasData": {
+        "x": 540,
+        "y": 386,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 900,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-4c510748",
+          "measuredAt": 1792856349193
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/settings.html",
+        "interactions": [
+          {
+            "domId": "btn-sound-done",
+            "targetPageId": "page-countdown",
+            "hideEdge": true,
+            "transitionLabel": "返回倒计时"
+          }
+        ]
+      }
+    }
+  ],
+  "config": {
+    "autoLayout": true,
+    "deviceType": "desktop",
+    "projectName": "极简计时器"
+  }
+}

@@ -1,0 +1,366 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>极简计时器 · 秒表</title>
+    <style id="theme-vars">
+/* 极简计时器 — 暗色科技风格设计令牌 */
+
+:root {
+  /* 品牌主色：电光青 */
+  --tm-primary: #38F2C6;
+  --tm-primary-foreground: #04140F;
+
+  /* 中性背景：近黑深空 */
+  --tm-background: #070B0F;
+  --tm-foreground: #E6EDF3;
+
+  --tm-card: #0F151B;
+  --tm-card-foreground: #E6EDF3;
+
+  --tm-popover: #11181F;
+  --tm-popover-foreground: #E6EDF3;
+
+  --tm-muted: #1B232C;
+  --tm-muted-foreground: #8B97A5;
+
+  --tm-border: #1F2A35;
+  --tm-input: #16202A;
+  --tm-ring: #38F2C6;
+
+  /* 语义状态色 */
+  --tm-success: #34D399;
+  --tm-warning: #FBBF24;
+  --tm-danger: #F87171;
+
+  /* 圆角刻度 */
+  --tm-radius-sm: 8px;
+  --tm-radius-md: 14px;
+  --tm-radius-lg: 22px;
+
+  /* 字体 */
+  --tm-font-sans: "Inter", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --tm-font-mono: "JetBrains Mono", "SFMono-Regular", "Cascadia Code", "Consolas", monospace;
+
+  --tm-font-size-display: clamp(64px, 12vw, 168px);
+  --tm-font-size-h1: 32px;
+  --tm-font-size-h2: 22px;
+  --tm-font-size-body: 15px;
+  --tm-font-size-caption: 12px;
+
+  --tm-font-weight-regular: 400;
+  --tm-font-weight-medium: 500;
+  --tm-font-weight-semibold: 600;
+  --tm-font-weight-bold: 700;
+}
+
+    </style>
+    <script src="https://unpkg.com/@tailwindcss/browser@4/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js?v=2"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--tm-background);
+    --color-foreground: var(--tm-foreground);
+    --color-card: var(--tm-card);
+    --color-card-foreground: var(--tm-card-foreground);
+    --color-popover: var(--tm-popover);
+    --color-popover-foreground: var(--tm-popover-foreground);
+    --color-primary: var(--tm-primary);
+    --color-primary-foreground: var(--tm-primary-foreground);
+    --color-muted: var(--tm-muted);
+    --color-muted-foreground: var(--tm-muted-foreground);
+    --color-border: var(--tm-border);
+    --color-input: var(--tm-input);
+    --color-ring: var(--tm-ring);
+    --radius-sm: var(--tm-radius-sm);
+    --radius-md: var(--tm-radius-md);
+    --radius-lg: var(--tm-radius-lg);
+  }
+  @layer base {
+    body { background: var(--tm-background); color: var(--tm-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background { background-color: var(--tm-background); }
+      .text-background { color: var(--tm-background); }
+      .border-background { border-color: var(--tm-background); }
+      .ring-background { --tw-ring-color: var(--tm-background); }
+      .bg-foreground { background-color: var(--tm-foreground); }
+      .text-foreground { color: var(--tm-foreground); }
+      .border-foreground { border-color: var(--tm-foreground); }
+      .ring-foreground { --tw-ring-color: var(--tm-foreground); }
+      .bg-card { background-color: var(--tm-card); }
+      .text-card { color: var(--tm-card); }
+      .border-card { border-color: var(--tm-card); }
+      .ring-card { --tw-ring-color: var(--tm-card); }
+      .bg-card-foreground { background-color: var(--tm-card-foreground); }
+      .text-card-foreground { color: var(--tm-card-foreground); }
+      .border-card-foreground { border-color: var(--tm-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--tm-card-foreground); }
+      .bg-popover { background-color: var(--tm-popover); }
+      .text-popover { color: var(--tm-popover); }
+      .border-popover { border-color: var(--tm-popover); }
+      .ring-popover { --tw-ring-color: var(--tm-popover); }
+      .bg-popover-foreground { background-color: var(--tm-popover-foreground); }
+      .text-popover-foreground { color: var(--tm-popover-foreground); }
+      .border-popover-foreground { border-color: var(--tm-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--tm-popover-foreground); }
+      .bg-primary { background-color: var(--tm-primary); }
+      .text-primary { color: var(--tm-primary); }
+      .border-primary { border-color: var(--tm-primary); }
+      .ring-primary { --tw-ring-color: var(--tm-primary); }
+      .bg-primary-foreground { background-color: var(--tm-primary-foreground); }
+      .text-primary-foreground { color: var(--tm-primary-foreground); }
+      .border-primary-foreground { border-color: var(--tm-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--tm-primary-foreground); }
+      .bg-muted { background-color: var(--tm-muted); }
+      .text-muted { color: var(--tm-muted); }
+      .border-muted { border-color: var(--tm-muted); }
+      .ring-muted { --tw-ring-color: var(--tm-muted); }
+      .bg-muted-foreground { background-color: var(--tm-muted-foreground); }
+      .text-muted-foreground { color: var(--tm-muted-foreground); }
+      .border-muted-foreground { border-color: var(--tm-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--tm-muted-foreground); }
+      .bg-border { background-color: var(--tm-border); }
+      .text-border { color: var(--tm-border); }
+      .border-border { border-color: var(--tm-border); }
+      .ring-border { --tw-ring-color: var(--tm-border); }
+      .bg-input { background-color: var(--tm-input); }
+      .text-input { color: var(--tm-input); }
+      .border-input { border-color: var(--tm-input); }
+      .ring-input { --tw-ring-color: var(--tm-input); }
+      .bg-ring { background-color: var(--tm-ring); }
+      .text-ring { color: var(--tm-ring); }
+      .border-ring { border-color: var(--tm-ring); }
+      .ring-ring { --tw-ring-color: var(--tm-ring); }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body data-page="stopwatch" class="min-h-screen font-sans antialiased bg-background text-foreground">
+    <!-- Background texture: grid + radial glow -->
+    <div aria-hidden="true" class="bg-texture" data-bg-layer></div>
+
+    <!-- Topbar (sticky, full-width, outside content container) -->
+    <header class="topbar bg-background/70 backdrop-blur border-b border-border">
+      <div class="topbar__inner max-w-2xl mx-auto px-5 h-14 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="grid place-items-center w-7 h-7 rounded-md bg-primary/10 border border-primary/20">
+            <i data-lucide="timer" class="w-4 h-4 text-primary"></i>
+          </span>
+          <div class="flex flex-col leading-none">
+            <span class="text-[14px] font-semibold text-foreground">极简计时器</span>
+            <span class="text-[10px] tracking-[0.25em] text-muted-foreground">STOPWATCH · TIMER</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" aria-label="通知" class="grid place-items-center w-9 h-9 rounded-full bg-card border border-border text-muted-foreground hover:text-foreground transition-colors">
+            <i data-lucide="bell" class="w-4 h-4"></i>
+          </button>
+          <button data-dom-id="icon-settings" type="button" aria-label="设置" class="grid place-items-center w-9 h-9 rounded-full bg-card border border-border text-muted-foreground hover:text-foreground transition-colors">
+            <i data-lucide="settings" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="content-wrap max-w-2xl mx-auto px-5 py-10 flex flex-col gap-8">
+
+      <!-- Tabs -->
+      <nav class="tabs" aria-label="计时模式">
+        <div class="tabs__pill inline-flex items-center gap-1 bg-muted/60 rounded-full p-1">
+          <button data-dom-id="tab-stopwatch" class="tab tab--active inline-flex items-center gap-1.5 px-5 py-1.5 rounded-full text-[13px] font-medium text-foreground bg-card border border-border">
+            <i data-lucide="timer" class="w-3.5 h-3.5"></i>
+            <span>秒表</span>
+          </button>
+          <button data-dom-id="tab-countdown" class="tab inline-flex items-center gap-1.5 px-5 py-1.5 rounded-full text-[13px] text-muted-foreground">
+            <i data-lucide="hourglass" class="w-3.5 h-3.5"></i>
+            <span>倒计时</span>
+          </button>
+        </div>
+        <span class="tabs__indicator" aria-hidden="true"></span>
+      </nav>
+
+      <!-- Display -->
+      <section class="display-block flex flex-col items-center gap-3" aria-label="计时显示">
+        <span class="text-[11px] tracking-[0.3em] text-muted-foreground">已用时 · ELAPSED</span>
+        <div class="display__digits font-mono tabular-nums leading-none tracking-tight text-foreground" aria-live="polite">
+          <span class="display__main">00:00</span><span class="display__ms">.000</span>
+        </div>
+      </section>
+
+      <!-- Progress ticks -->
+      <section class="progress" aria-label="进度刻度">
+        <div class="progress__track relative h-px w-full bg-border">
+          <div class="progress__fill absolute left-0 top-0 h-px bg-primary" style="width:12%"></div>
+          <div class="progress__ticks absolute inset-0 flex justify-between">
+            <span class="w-px h-2 -translate-y-[3px] bg-border"></span>
+            <span class="w-px h-2 -translate-y-[3px] bg-border"></span>
+            <span class="w-px h-2 -translate-y-[3px] bg-border"></span>
+            <span class="w-px h-2 -translate-y-[3px] bg-border"></span>
+            <span class="w-px h-2 -translate-y-[3px] bg-border"></span>
+            <span class="w-px h-2 -translate-y-[3px] bg-border"></span>
+            <span class="w-px h-2 -translate-y-[3px] bg-border"></span>
+            <span class="w-px h-2 -translate-y-[3px] bg-border"></span>
+            <span class="w-px h-2 -translate-y-[3px] bg-border"></span>
+            <span class="w-px h-2 -translate-y-[3px] bg-border"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Laps -->
+      <section class="laps-card bg-card/70 rounded-lg border border-border" aria-label="计次记录">
+        <div class="flex items-center justify-between px-4 pt-3.5 pb-2">
+          <span class="text-[11px] tracking-[0.25em] text-muted-foreground">计次记录 · LAPS</span>
+          <span class="text-[11px] text-muted-foreground font-mono">3 / 99</span>
+        </div>
+        <ul class="laps-list" role="list">
+          <li class="laps-list__row flex items-center justify-between px-4 py-3">
+            <span class="font-mono text-[13px] text-muted-foreground">#01</span>
+            <span class="font-mono text-[15px] text-foreground tabular-nums">00:12.340</span>
+            <span class="font-mono text-[13px] text-muted-foreground tabular-nums">+00:12.340</span>
+          </li>
+          <li class="laps-list__row flex items-center justify-between px-4 py-3 border-t border-border">
+            <span class="font-mono text-[13px] text-muted-foreground">#02</span>
+            <span class="font-mono text-[15px] text-foreground tabular-nums">00:24.780</span>
+            <span class="font-mono text-[13px] text-muted-foreground tabular-nums">+00:12.440</span>
+          </li>
+          <li class="laps-list__row flex items-center justify-between px-4 py-3 border-t border-border">
+            <span class="font-mono text-[13px] text-muted-foreground">#03</span>
+            <span class="font-mono text-[15px] text-foreground tabular-nums">00:37.115</span>
+            <span class="font-mono text-[13px] text-muted-foreground tabular-nums">+00:12.335</span>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Controls -->
+      <section class="controls flex flex-wrap items-center justify-center gap-3" aria-label="计时控制">
+        <button data-dom-id="btn-start" type="button" class="btn btn--primary inline-flex items-center gap-2 rounded-full px-8 py-3 font-medium bg-primary text-primary-foreground hover:opacity-90 transition-opacity">
+          <i data-lucide="play" class="w-4 h-4"></i>
+          <span>开始</span>
+        </button>
+        <button data-dom-id="btn-lap" type="button" class="btn inline-flex items-center gap-2 rounded-full px-6 py-3 bg-transparent border border-border text-foreground hover:bg-card/60 transition-colors">
+          <i data-lucide="flag" class="w-4 h-4"></i>
+          <span>计次</span>
+        </button>
+        <button data-dom-id="btn-reset" type="button" class="btn inline-flex items-center gap-2 rounded-full px-6 py-3 bg-transparent border border-border text-muted-foreground hover:text-foreground transition-colors">
+          <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+          <span>重置</span>
+        </button>
+      </section>
+
+      <!-- Usecase -->
+      <section class="usecase flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-muted-foreground text-[13px]" aria-label="适用场景">
+        <span class="inline-flex items-center gap-1.5">
+          <i data-lucide="zap" class="w-3.5 h-3.5"></i>视频延迟对比
+        </span>
+        <span class="text-muted-foreground/60" aria-hidden="true">·</span>
+        <span class="inline-flex items-center gap-1.5">
+          <i data-lucide="dumbbell" class="w-3.5 h-3.5"></i>运动间歇训练
+        </span>
+        <span class="text-muted-foreground/60" aria-hidden="true">·</span>
+        <span class="inline-flex items-center gap-1.5">
+          <i data-lucide="brain" class="w-3.5 h-3.5"></i>专注番茄钟
+        </span>
+      </section>
+
+      <!-- Ad slot -->
+      <section class="adslot rounded-lg border border-dashed border-border bg-card/40 p-4 flex flex-col items-center gap-1 text-center" aria-label="广告位">
+        <span class="text-muted-foreground text-[12px] tracking-[0.2em]">广告位 · Ad Slot</span>
+        <span class="text-[11px] text-muted-foreground/70">可嵌入展示型广告获取收益</span>
+      </section>
+
+      <!-- Footer note -->
+      <p class="text-center text-[11px] text-muted-foreground/60 pt-2">© 极简计时器 · 精密专注的垂直计时工具</p>
+
+      <style class="critical-layout">
+        /* Critical layout-safe static CSS for stopwatch shell geometry */
+        html, body { overflow-x: hidden; }
+        body { position: relative; min-height: 100vh; }
+
+        .bg-texture {
+          position: fixed;
+          inset: 0;
+          z-index: 0;
+          pointer-events: none;
+          background-color: var(--tm-background);
+          background-image:
+            linear-gradient(to right, rgba(56,242,198,0.025) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(56,242,198,0.025) 1px, transparent 1px),
+            radial-gradient(circle at 50% 38%, rgba(56,242,198,0.08) 0%, rgba(56,242,198,0) 55%);
+          background-size: 44px 44px, 44px 44px, 100% 100%;
+          background-repeat: repeat, repeat, no-repeat;
+        }
+
+        .topbar { position: sticky; top: 0; z-index: 20; }
+
+        .content-wrap, .topbar__inner { position: relative; z-index: 1; }
+
+        .tabs {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          padding-bottom: 2px;
+        }
+        .tabs__indicator {
+          position: absolute;
+          bottom: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 96px;
+          height: 2px;
+          background: var(--tm-primary);
+          border-radius: 2px;
+          opacity: 0.9;
+        }
+
+        .display__digits {
+          font-family: var(--tm-font-mono);
+          font-size: clamp(56px, 13vw, 160px);
+          line-height: 1;
+          letter-spacing: -0.02em;
+          text-shadow: 0 0 40px rgba(56,242,198,0.18);
+          white-space: nowrap;
+        }
+        .display__ms {
+          font-size: 0.45em;
+          color: var(--tm-muted-foreground);
+          margin-left: 0.05em;
+        }
+
+        .progress__track { margin-top: 2px; }
+        .progress__ticks { pointer-events: none; }
+
+        .laps-card { width: 100%; }
+        .laps-list__row { width: 100%; }
+
+        .controls .btn { min-width: 0; }
+
+        @media (max-width: 380px) {
+          .display__digits { font-size: clamp(48px, 14vw, 120px); }
+          .btn--primary { padding-left: 1.5rem; padding-right: 1.5rem; }
+        }
+      </style>
+    </main>
+    <script src="../assets/app.js?v=9"></script>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

@@ -1,0 +1,511 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>极简计时器 · 铃声设置</title>
+    <style id="theme-vars">
+/* 极简计时器 — 暗色科技风格设计令牌 */
+
+:root {
+  /* 品牌主色：电光青 */
+  --tm-primary: #38F2C6;
+  --tm-primary-foreground: #04140F;
+
+  /* 中性背景：近黑深空 */
+  --tm-background: #070B0F;
+  --tm-foreground: #E6EDF3;
+
+  --tm-card: #0F151B;
+  --tm-card-foreground: #E6EDF3;
+
+  --tm-popover: #11181F;
+  --tm-popover-foreground: #E6EDF3;
+
+  --tm-muted: #1B232C;
+  --tm-muted-foreground: #8B97A5;
+
+  --tm-border: #1F2A35;
+  --tm-input: #16202A;
+  --tm-ring: #38F2C6;
+
+  /* 语义状态色 */
+  --tm-success: #34D399;
+  --tm-warning: #FBBF24;
+  --tm-danger: #F87171;
+
+  /* 圆角刻度 */
+  --tm-radius-sm: 8px;
+  --tm-radius-md: 14px;
+  --tm-radius-lg: 22px;
+
+  /* 字体 */
+  --tm-font-sans: "Inter", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --tm-font-mono: "JetBrains Mono", "SFMono-Regular", "Cascadia Code", "Consolas", monospace;
+
+  --tm-font-size-display: clamp(64px, 12vw, 168px);
+  --tm-font-size-h1: 32px;
+  --tm-font-size-h2: 22px;
+  --tm-font-size-body: 15px;
+  --tm-font-size-caption: 12px;
+
+  --tm-font-weight-regular: 400;
+  --tm-font-weight-medium: 500;
+  --tm-font-weight-semibold: 600;
+  --tm-font-weight-bold: 700;
+}
+
+    </style>
+    <script src="https://unpkg.com/@tailwindcss/browser@4/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js?v=2"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--tm-background);
+    --color-foreground: var(--tm-foreground);
+    --color-card: var(--tm-card);
+    --color-card-foreground: var(--tm-card-foreground);
+    --color-popover: var(--tm-popover);
+    --color-popover-foreground: var(--tm-popover-foreground);
+    --color-primary: var(--tm-primary);
+    --color-primary-foreground: var(--tm-primary-foreground);
+    --color-muted: var(--tm-muted);
+    --color-muted-foreground: var(--tm-muted-foreground);
+    --color-border: var(--tm-border);
+    --color-input: var(--tm-input);
+    --color-ring: var(--tm-ring);
+    --radius-sm: var(--tm-radius-sm);
+    --radius-md: var(--tm-radius-md);
+    --radius-lg: var(--tm-radius-lg);
+  }
+  @layer base {
+    body { background: var(--tm-background); color: var(--tm-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background { background-color: var(--tm-background); }
+      .text-background { color: var(--tm-background); }
+      .border-background { border-color: var(--tm-background); }
+      .ring-background { --tw-ring-color: var(--tm-background); }
+      .bg-foreground { background-color: var(--tm-foreground); }
+      .text-foreground { color: var(--tm-foreground); }
+      .border-foreground { border-color: var(--tm-foreground); }
+      .ring-foreground { --tw-ring-color: var(--tm-foreground); }
+      .bg-card { background-color: var(--tm-card); }
+      .text-card { color: var(--tm-card); }
+      .border-card { border-color: var(--tm-card); }
+      .ring-card { --tw-ring-color: var(--tm-card); }
+      .bg-card-foreground { background-color: var(--tm-card-foreground); }
+      .text-card-foreground { color: var(--tm-card-foreground); }
+      .border-card-foreground { border-color: var(--tm-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--tm-card-foreground); }
+      .bg-popover { background-color: var(--tm-popover); }
+      .text-popover { color: var(--tm-popover); }
+      .border-popover { border-color: var(--tm-popover); }
+      .ring-popover { --tw-ring-color: var(--tm-popover); }
+      .bg-popover-foreground { background-color: var(--tm-popover-foreground); }
+      .text-popover-foreground { color: var(--tm-popover-foreground); }
+      .border-popover-foreground { border-color: var(--tm-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--tm-popover-foreground); }
+      .bg-primary { background-color: var(--tm-primary); }
+      .text-primary { color: var(--tm-primary); }
+      .border-primary { border-color: var(--tm-primary); }
+      .ring-primary { --tw-ring-color: var(--tm-primary); }
+      .bg-primary-foreground { background-color: var(--tm-primary-foreground); }
+      .text-primary-foreground { color: var(--tm-primary-foreground); }
+      .border-primary-foreground { border-color: var(--tm-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--tm-primary-foreground); }
+      .bg-muted { background-color: var(--tm-muted); }
+      .text-muted { color: var(--tm-muted); }
+      .border-muted { border-color: var(--tm-muted); }
+      .ring-muted { --tw-ring-color: var(--tm-muted); }
+      .bg-muted-foreground { background-color: var(--tm-muted-foreground); }
+      .text-muted-foreground { color: var(--tm-muted-foreground); }
+      .border-muted-foreground { border-color: var(--tm-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--tm-muted-foreground); }
+      .bg-border { background-color: var(--tm-border); }
+      .text-border { color: var(--tm-border); }
+      .border-border { border-color: var(--tm-border); }
+      .ring-border { --tw-ring-color: var(--tm-border); }
+      .bg-input { background-color: var(--tm-input); }
+      .text-input { color: var(--tm-input); }
+      .border-input { border-color: var(--tm-input); }
+      .ring-input { --tw-ring-color: var(--tm-input); }
+      .bg-ring { background-color: var(--tm-ring); }
+      .text-ring { color: var(--tm-ring); }
+      .border-ring { border-color: var(--tm-ring); }
+      .ring-ring { --tw-ring-color: var(--tm-ring); }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body data-page="settings" class="min-h-screen font-sans antialiased bg-background text-foreground">
+    <!-- Background texture: grid + radial glow -->
+    <div aria-hidden="true" class="bg-texture" data-bg-layer></div>
+
+    <!-- Topbar -->
+    <header class="topbar bg-background/70 backdrop-blur border-b border-border">
+      <div class="topbar__inner max-w-2xl mx-auto px-5 h-14 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="grid place-items-center w-7 h-7 rounded-md bg-primary/10 border border-primary/20">
+            <i data-lucide="timer" class="w-4 h-4 text-primary"></i>
+          </span>
+          <div class="flex flex-col leading-none">
+            <span class="text-[14px] font-semibold text-foreground">极简计时器</span>
+            <span class="text-[10px] tracking-[0.25em] text-muted-foreground">STOPWATCH · TIMER</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" aria-label="通知" class="grid place-items-center w-9 h-9 rounded-full bg-card border border-border text-muted-foreground hover:text-foreground transition-colors">
+            <i data-lucide="bell" class="w-4 h-4"></i>
+          </button>
+          <button data-dom-id="icon-settings" type="button" aria-label="设置" class="grid place-items-center w-9 h-9 rounded-full bg-card border border-primary text-primary transition-colors">
+            <i data-lucide="settings" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Dimmed base content behind modal -->
+    <main class="content-wrap max-w-2xl mx-auto px-5 py-10 flex flex-col gap-8" aria-hidden="true" style="opacity:0.32; filter: blur(2px); pointer-events:none;">
+
+      <!-- Tabs (秒表 active) -->
+      <nav class="tabs" aria-label="计时模式">
+        <div class="tabs__pill inline-flex items-center gap-1 bg-muted/60 rounded-full p-1">
+          <button data-dom-id="tab-stopwatch" class="tab tab--active inline-flex items-center gap-1.5 px-5 py-1.5 rounded-full text-[13px] font-medium text-foreground bg-card border border-border">
+            <i data-lucide="timer" class="w-3.5 h-3.5"></i>
+            <span>秒表</span>
+          </button>
+          <button data-dom-id="tab-countdown" class="tab inline-flex items-center gap-1.5 px-5 py-1.5 rounded-full text-[13px] text-muted-foreground">
+            <i data-lucide="hourglass" class="w-3.5 h-3.5"></i>
+            <span>倒计时</span>
+          </button>
+        </div>
+        <span class="tabs__indicator" aria-hidden="true"></span>
+      </nav>
+
+      <!-- Display -->
+      <section class="display-block flex flex-col items-center gap-3" aria-label="计时显示">
+        <span class="text-[11px] tracking-[0.3em] text-muted-foreground">已用时 · ELAPSED</span>
+        <div class="display__digits font-mono tabular-nums leading-none tracking-tight text-foreground" aria-live="polite">
+          <span class="display__main">00:00</span><span class="display__ms">.000</span>
+        </div>
+      </section>
+
+      <!-- Progress ticks -->
+      <section class="progress" aria-label="进度刻度">
+        <div class="progress__track relative h-px w-full bg-border">
+          <div class="progress__fill absolute left-0 top-0 h-px bg-primary" style="width:12%"></div>
+        </div>
+      </section>
+
+      <!-- Laps -->
+      <section class="laps-card bg-card/70 rounded-lg border border-border" aria-label="计次记录">
+        <div class="flex items-center justify-between px-4 pt-3.5 pb-2">
+          <span class="text-[11px] tracking-[0.25em] text-muted-foreground">计次记录 · LAPS</span>
+        </div>
+        <ul role="list">
+          <li class="flex items-center justify-between px-4 py-3">
+            <span class="font-mono text-[13px] text-muted-foreground">#01</span>
+            <span class="font-mono text-[15px] text-foreground tabular-nums">00:12.340</span>
+            <span class="font-mono text-[13px] text-muted-foreground tabular-nums">+00:12.340</span>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Controls -->
+      <section class="controls flex flex-wrap items-center justify-center gap-3" aria-label="计时控制">
+        <button type="button" class="btn btn--primary inline-flex items-center gap-2 rounded-full px-8 py-3 font-medium bg-primary text-primary-foreground">
+          <i data-lucide="play" class="w-4 h-4"></i><span>开始</span>
+        </button>
+        <button type="button" class="btn inline-flex items-center gap-2 rounded-full px-6 py-3 bg-transparent border border-border text-foreground">
+          <i data-lucide="flag" class="w-4 h-4"></i><span>计次</span>
+        </button>
+        <button type="button" class="btn inline-flex items-center gap-2 rounded-full px-6 py-3 bg-transparent border border-border text-muted-foreground">
+          <i data-lucide="rotate-ccw" class="w-4 h-4"></i><span>重置</span>
+        </button>
+      </section>
+    </main>
+
+    <!-- Modal overlay -->
+    <div class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-overlay__backdrop" aria-hidden="true"></div>
+      <div class="modal-overlay__panel">
+        <!-- Modal header -->
+        <header class="modal-overlay__header">
+          <div class="flex items-center gap-2.5">
+            <span class="grid place-items-center w-8 h-8 rounded-md bg-primary/10 border border-primary/20">
+              <i data-lucide="bell-ring" class="w-4 h-4 text-primary"></i>
+            </span>
+            <div class="flex flex-col leading-none">
+              <h2 id="modal-title" class="text-[15px] font-semibold text-foreground">铃声设置</h2>
+              <span class="text-[10px] tracking-[0.25em] text-muted-foreground mt-0.5">ALERT SOUND</span>
+            </div>
+          </div>
+          <button data-dom-id="btn-sound-close" type="button" aria-label="关闭" class="grid place-items-center w-8 h-8 rounded-full bg-muted/60 border border-border text-muted-foreground hover:text-foreground transition-colors">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </header>
+
+        <!-- Sound options -->
+        <div class="modal-overlay__body">
+          <ul class="sound-list" role="radiogroup" aria-label="铃声选项">
+            <li>
+              <label class="sound-option sound-option--active">
+                <span class="sound-option__radio" aria-hidden="true"></span>
+                <span class="grid place-items-center w-8 h-8 rounded-md bg-primary/10 border border-primary/20">
+                  <i data-lucide="bell" class="w-4 h-4 text-primary"></i>
+                </span>
+                <span class="flex flex-col leading-tight">
+                  <span class="text-[14px] font-medium text-foreground">铃声</span>
+                  <span class="text-[11px] text-muted-foreground">清脆铃铛声，默认提示</span>
+                </span>
+                <button type="button" aria-label="试听" class="sound-option__preview grid place-items-center w-8 h-8 rounded-full bg-muted/60 border border-border text-muted-foreground hover:text-primary transition-colors">
+                  <i data-lucide="volume-2" class="w-4 h-4"></i>
+                </button>
+              </label>
+            </li>
+            <li>
+              <label class="sound-option">
+                <span class="sound-option__radio" aria-hidden="true"></span>
+                <span class="grid place-items-center w-8 h-8 rounded-md bg-muted/50 border border-border">
+                  <i data-lucide="bell-dot" class="w-4 h-4 text-muted-foreground"></i>
+                </span>
+                <span class="flex flex-col leading-tight">
+                  <span class="text-[14px] font-medium text-foreground">叮咚</span>
+                  <span class="text-[11px] text-muted-foreground">门铃式双音提示</span>
+                </span>
+                <button type="button" aria-label="试听" class="sound-option__preview grid place-items-center w-8 h-8 rounded-full bg-muted/60 border border-border text-muted-foreground hover:text-primary transition-colors">
+                  <i data-lucide="volume-2" class="w-4 h-4"></i>
+                </button>
+              </label>
+            </li>
+            <li>
+              <label class="sound-option">
+                <span class="sound-option__radio" aria-hidden="true"></span>
+                <span class="grid place-items-center w-8 h-8 rounded-md bg-muted/50 border border-border">
+                  <i data-lucide="audio-waveform" class="w-4 h-4 text-muted-foreground"></i>
+                </span>
+                <span class="flex flex-col leading-tight">
+                  <span class="text-[14px] font-medium text-foreground">蜂鸣</span>
+                  <span class="text-[11px] text-muted-foreground">持续电子蜂鸣音</span>
+                </span>
+                <button type="button" aria-label="试听" class="sound-option__preview grid place-items-center w-8 h-8 rounded-full bg-muted/60 border border-border text-muted-foreground hover:text-primary transition-colors">
+                  <i data-lucide="volume-2" class="w-4 h-4"></i>
+                </button>
+              </label>
+            </li>
+            <li>
+              <label class="sound-option">
+                <span class="sound-option__radio" aria-hidden="true"></span>
+                <span class="grid place-items-center w-8 h-8 rounded-md bg-muted/50 border border-border">
+                  <i data-lucide="bell-off" class="w-4 h-4 text-muted-foreground"></i>
+                </span>
+                <span class="flex flex-col leading-tight">
+                  <span class="text-[14px] font-medium text-foreground">静音</span>
+                  <span class="text-[11px] text-muted-foreground">仅屏幕闪烁提示</span>
+                </span>
+                <button type="button" aria-label="试听" class="sound-option__preview grid place-items-center w-8 h-8 rounded-full bg-muted/60 border border-border text-muted-foreground hover:text-primary transition-colors">
+                  <i data-lucide="volume-x" class="w-4 h-4"></i>
+                </button>
+              </label>
+            </li>
+            <li>
+              <label class="sound-option">
+                <span class="sound-option__radio" aria-hidden="true"></span>
+                <span class="grid place-items-center w-8 h-8 rounded-md bg-muted/50 border border-border">
+                  <i data-lucide="music" class="w-4 h-4 text-muted-foreground"></i>
+                </span>
+                <span class="flex flex-col leading-tight">
+                  <span class="text-[14px] font-medium text-foreground">自定义</span>
+                  <span class="text-[11px] text-muted-foreground">上传音频或粘贴链接</span>
+                </span>
+                <button type="button" aria-label="试听" class="sound-option__preview grid place-items-center w-8 h-8 rounded-full bg-muted/60 border border-border text-muted-foreground hover:text-primary transition-colors">
+                  <i data-lucide="upload" class="w-4 h-4"></i>
+                </button>
+              </label>
+            </li>
+          </ul>
+
+          <!-- Volume slider -->
+          <div class="volume-row">
+            <div class="flex items-center gap-2">
+              <i data-lucide="volume-1" class="w-4 h-4 text-muted-foreground"></i>
+              <span class="text-[12px] text-muted-foreground tracking-[0.15em]">音量 · VOLUME</span>
+            </div>
+            <div class="volume-row__slider">
+              <div class="volume-row__track"></div>
+              <div class="volume-row__fill" style="width:70%"></div>
+              <div class="volume-row__thumb" style="left:70%"></div>
+            </div>
+            <span class="font-mono text-[12px] text-foreground tabular-nums">70</span>
+          </div>
+        </div>
+
+        <!-- Modal footer -->
+        <footer class="modal-overlay__footer">
+          <button data-dom-id="btn-sound-reset" type="button" class="btn-inline text-[13px] text-muted-foreground hover:text-foreground transition-colors">恢复默认</button>
+          <button data-dom-id="btn-sound-done" type="button" class="btn-primary inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-[13px] font-medium bg-primary text-primary-foreground hover:opacity-90 transition-opacity">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>完成</span>
+          </button>
+        </footer>
+      </div>
+    </div>
+
+    <style class="critical-layout">
+      /* Critical layout-safe static CSS for settings modal shell geometry */
+      html, body { overflow-x: hidden; }
+      body { position: relative; min-height: 100vh; }
+
+      .bg-texture {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background-color: var(--tm-background);
+        background-image:
+          linear-gradient(to right, rgba(56,242,198,0.025) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(56,242,198,0.025) 1px, transparent 1px),
+          radial-gradient(circle at 50% 38%, rgba(56,242,198,0.08) 0%, rgba(56,242,198,0) 55%);
+        background-size: 44px 44px, 44px 44px, 100% 100%;
+        background-repeat: repeat, repeat, no-repeat;
+      }
+
+      .topbar { position: sticky; top: 0; z-index: 20; }
+      .content-wrap, .topbar__inner { position: relative; z-index: 1; }
+
+      .tabs { display: flex; align-items: center; justify-content: center; position: relative; padding-bottom: 2px; }
+      .tabs__indicator { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 96px; height: 2px; background: var(--tm-primary); border-radius: 2px; opacity: 0.9; }
+
+      .display__digits { font-family: var(--tm-font-mono); font-size: clamp(56px, 13vw, 160px); line-height: 1; letter-spacing: -0.02em; text-shadow: 0 0 40px rgba(56,242,198,0.18); white-space: nowrap; }
+      .display__ms { font-size: 0.45em; color: var(--tm-muted-foreground); margin-left: 0.05em; }
+
+      /* Modal overlay */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+      }
+      .modal-overlay__backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(7, 11, 15, 0.72);
+        backdrop-filter: blur(6px);
+      }
+      .modal-overlay__panel {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 460px;
+        background: var(--tm-popover);
+        border: 1px solid var(--tm-border);
+        border-radius: var(--tm-radius-lg);
+        box-shadow: 0 24px 64px rgba(0,0,0,0.5), 0 0 0 1px rgba(56,242,198,0.06);
+        display: flex;
+        flex-direction: column;
+        max-height: 90vh;
+        overflow: hidden;
+      }
+      .modal-overlay__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--tm-border);
+      }
+      .modal-overlay__body {
+        padding: 12px 20px 18px;
+        overflow-y: auto;
+      }
+
+      .sound-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+      .sound-option {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        border: 1px solid var(--tm-border);
+        border-radius: var(--tm-radius-md);
+        background: var(--tm-card);
+        cursor: pointer;
+        transition: border-color 0.15s, background 0.15s;
+      }
+      .sound-option:hover { border-color: var(--tm-primary); }
+      .sound-option--active { border-color: var(--tm-primary); background: rgba(56,242,198,0.08); }
+      .sound-option__radio {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        border: 2px solid var(--tm-muted-foreground);
+        flex-shrink: 0;
+        position: relative;
+      }
+      .sound-option--active .sound-option__radio {
+        border-color: var(--tm-primary);
+      }
+      .sound-option--active .sound-option__radio::after {
+        content: "";
+        position: absolute;
+        inset: 3px;
+        border-radius: 999px;
+        background: var(--tm-primary);
+      }
+      .sound-option__preview { flex-shrink: 0; margin-left: auto; }
+
+      .volume-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 16px;
+        padding-top: 14px;
+        border-top: 1px solid var(--tm-border);
+      }
+      .volume-row__slider {
+        position: relative;
+        flex: 1;
+        height: 4px;
+      }
+      .volume-row__track { position: absolute; inset: 0; height: 4px; background: var(--tm-muted); border-radius: 999px; }
+      .volume-row__fill { position: absolute; left: 0; top: 0; height: 4px; background: var(--tm-primary); border-radius: 999px; }
+      .volume-row__thumb { position: absolute; top: 50%; width: 14px; height: 14px; border-radius: 999px; background: var(--tm-foreground); border: 2px solid var(--tm-primary); transform: translate(-50%, -50%); }
+
+      .modal-overlay__footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 20px;
+        border-top: 1px solid var(--tm-border);
+        background: rgba(7,11,15,0.4);
+      }
+      .btn-inline { background: transparent; border: none; cursor: pointer; }
+      .btn-primary { border: none; cursor: pointer; }
+
+      @media (max-width: 380px) {
+        .modal-overlay__panel { max-width: 100%; }
+        .sound-option { padding: 10px; gap: 10px; }
+      }
+    </style>
+    <script src="../assets/app.js?v=9"></script>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

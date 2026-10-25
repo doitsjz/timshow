@@ -1,0 +1,49 @@
+/* 极简计时器 — 暗色科技风格设计令牌 */
+
+:root {
+  /* 品牌主色：电光青 */
+  --tm-primary: #38F2C6;
+  --tm-primary-foreground: #04140F;
+
+  /* 中性背景：近黑深空 */
+  --tm-background: #070B0F;
+  --tm-foreground: #E6EDF3;
+
+  --tm-card: #0F151B;
+  --tm-card-foreground: #E6EDF3;
+
+  --tm-popover: #11181F;
+  --tm-popover-foreground: #E6EDF3;
+
+  --tm-muted: #1B232C;
+  --tm-muted-foreground: #8B97A5;
+
+  --tm-border: #1F2A35;
+  --tm-input: #16202A;
+  --tm-ring: #38F2C6;
+
+  /* 语义状态色 */
+  --tm-success: #34D399;
+  --tm-warning: #FBBF24;
+  --tm-danger: #F87171;
+
+  /* 圆角刻度 */
+  --tm-radius-sm: 8px;
+  --tm-radius-md: 14px;
+  --tm-radius-lg: 22px;
+
+  /* 字体 */
+  --tm-font-sans: "Inter", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --tm-font-mono: "JetBrains Mono", "SFMono-Regular", "Cascadia Code", "Consolas", monospace;
+
+  --tm-font-size-display: clamp(64px, 12vw, 168px);
+  --tm-font-size-h1: 32px;
+  --tm-font-size-h2: 22px;
+  --tm-font-size-body: 15px;
+  --tm-font-size-caption: 12px;
+
+  --tm-font-weight-regular: 400;
+  --tm-font-weight-medium: 500;
+  --tm-font-weight-semibold: 600;
+  --tm-font-weight-bold: 700;
+}
