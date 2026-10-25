@@ -479,6 +479,7 @@
     // 初始化：按上次记忆的单位档恢复
     if (lastUnit === 'sec') {
       if (customInput) customInput.value = '';
+      if (customSecondsInput) customSecondsInput.value = lastSeconds;
       setDurationSeconds(lastSeconds);
     } else {
       if (customInput) customInput.value = duration;
