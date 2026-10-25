@@ -1,4 +1,4 @@
-/* 极简计时器 · 静态前端逻辑
+﻿/* 极简计时器 · 静态前端逻辑
  * 纯原生 JS，无依赖
  * 包含：TimerEngine（秒表+倒计时）、SoundEngine（合成铃声）、Settings（持久化）、页面初始化
  */
@@ -433,7 +433,7 @@
       engine.reset(); setStartButton(false);
     });
     if (btnSound) btnSound.addEventListener('click', function () {
-      window.location.href = '/settings';
+      window.location.href = 'settings.html';
     });
 
     // 初始化：按上次记忆的单位档恢复
@@ -559,11 +559,11 @@
 
     if (doneBtn) doneBtn.addEventListener('click', function () {
       Settings.save();
-      window.location.href = '/countdown';
+      window.location.href = 'countdown.html';
     });
     if (closeBtn) closeBtn.addEventListener('click', function () {
       Settings.save();
-      window.location.href = '/countdown';
+      window.location.href = 'countdown.html';
     });
     if (resetBtn) resetBtn.addEventListener('click', function () {
       // 恢复铃声与音量到默认值（不跳转）
@@ -588,16 +588,16 @@
     var tabCd = $('[data-dom-id="tab-countdown"]');
     if (tabSw) tabSw.addEventListener('click', function () {
       if (currentPage === 'stopwatch') return;
-      window.location.href = '/';
+      window.location.href = 'index.html';
     });
     if (tabCd) tabCd.addEventListener('click', function () {
       if (currentPage === 'countdown') return;
-      window.location.href = '/countdown';
+      window.location.href = 'countdown.html';
     });
     var iconSettings = $('[data-dom-id="icon-settings"]');
     if (iconSettings) iconSettings.addEventListener('click', function () {
       if (currentPage === 'settings') return;
-      window.location.href = '/settings';
+      window.location.href = 'settings.html';
     });
   }
 

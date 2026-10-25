@@ -23,10 +23,11 @@ const MIME = {
 
 const server = http.createServer((req, res) => {
   let urlPath = decodeURIComponent(req.url.split('?')[0]);
+  // 友好路由 → 实际文件路径（本地预览兼容）
   if (urlPath === '/') urlPath = '/pages/index.html';
-  if (urlPath === '/stopwatch' || urlPath === '/index') urlPath = '/pages/index.html';
-  if (urlPath === '/countdown') urlPath = '/pages/countdown.html';
-  if (urlPath === '/settings') urlPath = '/pages/settings.html';
+  if (urlPath === '/index.html') urlPath = '/pages/index.html';
+  if (urlPath === '/countdown.html') urlPath = '/pages/countdown.html';
+  if (urlPath === '/settings.html') urlPath = '/pages/settings.html';
 
   const filePath = path.join(ROOT, urlPath);
   // 防目录穿越
