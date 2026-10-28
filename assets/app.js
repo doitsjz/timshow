@@ -1,4 +1,4 @@
-﻿/* 极简计时器 · 静态前端逻辑
+/* 极简计时器 · 静态前端逻辑
  * 纯原生 JS，无依赖
  * 包含：TimerEngine（秒表+倒计时）、SoundEngine（合成铃声）、Settings（持久化）、页面初始化
  */
@@ -161,8 +161,27 @@
       // 触发动态文本刷新（目标标签等）
       if (window.__i18nRefresh) window.__i18nRefresh();
     },
+    detect: function () {
+      // 1. 浏览器语言（navigator.language / languages）
+      var navLangs = (navigator.languages || [navigator.language || navigator.userLanguage || '']);
+      var navLang = (navLangs[0] || '').toLowerCase();
+      // 2. 时区辅助判断（中国时区 Asia/Shanghai 含 Asia/Shanghai/Chongqing/Urumqi/Harbin/Chungking）
+      var tz = '';
+      try { tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || ''); } catch (e) {}
+      var isChinaTz = tz.indexOf('Shanghai') !== -1 || tz.indexOf('Chongqing') !== -1 ||
+        tz.indexOf('Urumqi') !== -1 || tz.indexOf('Harbin') !== -1 || tz.indexOf('Chungking') !== -1;
+      // 浏览器语言以 zh 开头 或 时区为中国 → 中，否则 EN
+      if (navLang.indexOf('zh') === 0 || isChinaTz) return 'zh';
+      return 'en';
+    },
     init: function () {
-      this.cur = Settings.get('lang') || 'zh';
+      var saved = Settings.get('lang');
+      // 首次访问（无保存偏好）→ 自动检测
+      if (!saved) {
+        saved = this.detect();
+        Settings.set('lang', saved);
+      }
+      this.cur = saved || 'zh';
       this.apply();
     }
   };
